@@ -10,8 +10,5 @@ int main(int argc, char** argv)
 	Game main_game{};
 	main_game.run();
 
-	std::cout << "Enter any key to exit!";
-	int a; 
-	std::cin >> a;
 	return 0;
 }
