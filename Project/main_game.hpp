@@ -1,5 +1,9 @@
+#pragma once
+
 #include <SDL.h>
 #include <glew.h>
+#include "Sprite.hpp"
+
 
 enum class GameState
 {
@@ -15,6 +19,7 @@ class Game
 	int m_WIDTH;
 	int m_HEIGHT;
 
+	Sprite m_sprite{};
 
 	void init_system(); 
 	void process_input();
