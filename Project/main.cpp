@@ -6,7 +6,6 @@
 #include "Sprite.hpp"
 
 
-
 int main(int argc, char** argv)
 {
 	Game main_game{};

@@ -2,7 +2,10 @@
 
 #include <SDL.h>
 #include <glew.h>
+
+
 #include "Sprite.hpp"
+#include "GLSL.hpp"
 
 
 enum class GameState
@@ -21,6 +24,9 @@ class Game
 
 	Sprite m_sprite{};
 
+	GLSLProgram m_color_program;
+
+	void init_shaders();
 	void init_system(); 
 	void process_input();
 	void game_loop();

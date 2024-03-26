@@ -6,15 +6,9 @@
 
 #include "main_game.hpp"
 #include "Sprite.hpp"
+#include "Errors.hpp"
+#include "GLSL.hpp"
 
-void fatal_error(std::string error_str)
-{
-	std::cout << error_str << "\n";
-	std::cout << "Нажми любую клавишу чтобы выйти...";
-	int temp;
-	std::cin >> temp;
-	SDL_Quit();
-}
 
 Game::Game()
 {
@@ -38,8 +32,17 @@ void Game::run()
 	game_loop();
 }
 
+void Game::init_shaders()
+{
+	m_color_program.compile_shaders("C:\\Users\\User\\Desktop\\Code\\Visual\\SDL\\SDL\\Project\\Shaders\\fragment_shader.txt","C:\\Users\\User\\Desktop\\Code\\Visual\\SDL\\SDL\\Project\\Shaders\\vertex_shader.txt");
+	m_color_program.add_attribute("vertexPosition");
+	m_color_program.link_shaders();
+}
+
 void Game::init_system()
 {
+	setlocale(0, "");
+
 	SDL_Init(SDL_INIT_EVERYTHING);
 	m_window = SDL_CreateWindow("HU`ESOS", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, m_WIDTH, m_HEIGHT, SDL_WINDOW_OPENGL);
 	if (m_window == nullptr)
@@ -56,6 +59,8 @@ void Game::init_system()
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
 	glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
+
+	init_shaders();
 }
 
 void Game::process_input()
@@ -96,8 +101,11 @@ void Game::draw_game()
 	glClearDepth(1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	m_color_program.use();
+
 	m_sprite.draw();
+
+	m_color_program.unuse();
 
 	SDL_GL_SwapWindow(m_window);
 }
-

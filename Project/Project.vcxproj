@@ -134,11 +134,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Errors.cpp" />
+    <ClCompile Include="GLSL.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="main_game.cpp" />
     <ClCompile Include="Sprite.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Errors.hpp" />
+    <ClInclude Include="GLSL.hpp" />
     <ClInclude Include="main_game.hpp" />
     <ClInclude Include="Sprite.hpp" />
   </ItemGroup>
