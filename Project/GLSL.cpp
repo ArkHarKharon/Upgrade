@@ -10,13 +10,12 @@
 #include "GLSL.hpp"
 #include "Errors.hpp"
 
-GLSLProgram::GLSLProgram()
-{
-	 m_program_ID = 0;
-	 m_vertex_shader_ID = 0;
-	 m_fragment_shader_ID = 0;
-	 m_attributes_num = 0;
-}
+GLSLProgram::GLSLProgram():
+	m_program_ID{0},
+	m_vertex_shader_ID{0},
+	m_fragment_shader_ID{0},
+	m_attributes_num{0}
+{}
 
 GLSLProgram::~GLSLProgram()
 {
@@ -25,12 +24,14 @@ GLSLProgram::~GLSLProgram()
 
 void GLSLProgram::compile_shaders(const std::string& vetrex_shader_filepath, const std::string& fragment_shader_filepath)
 {
+	m_program_ID = glCreateProgram();
+
 	m_vertex_shader_ID = glCreateShader(GL_VERTEX_SHADER);
-	if (!m_vertex_shader_ID)
+	if (m_vertex_shader_ID == 0)
 		fatal_error("Вершиинный шейдер НЕ был создан!");
 
 	m_fragment_shader_ID = glCreateShader(GL_FRAGMENT_SHADER);
-	if (!m_fragment_shader_ID)
+	if (m_fragment_shader_ID == 0)
 		fatal_error("Фрагментный шейдер НЕ был создан!");
 
 	compile_shader(vetrex_shader_filepath, m_vertex_shader_ID);
@@ -40,8 +41,6 @@ void GLSLProgram::compile_shaders(const std::string& vetrex_shader_filepath, con
 
 void GLSLProgram::link_shaders()
 {
-	m_program_ID = glCreateProgram();
-
 	glAttachShader(m_program_ID, m_vertex_shader_ID);
 	glAttachShader(m_program_ID, m_fragment_shader_ID);
 
@@ -66,15 +65,12 @@ void GLSLProgram::link_shaders()
 
 	glDetachShader(m_program_ID, m_vertex_shader_ID);
 	glDetachShader(m_program_ID, m_fragment_shader_ID);
-
-	glDeleteShader(m_fragment_shader_ID);
-	glDeleteShader(m_vertex_shader_ID);
-
 }
 
 void GLSLProgram::add_attribute(const std::string attribute_name)
 {
-	glBindAttribLocation(m_program_ID, m_attributes_num++, attribute_name.c_str());
+	glBindAttribLocation(m_program_ID, m_attributes_num, attribute_name.c_str());
+	m_attributes_num++;
 }
 
 void GLSLProgram::use()
@@ -94,11 +90,11 @@ void GLSLProgram::unuse()
 
 void GLSLProgram::compile_shader(const std::string& shader_filepath, GLuint &id)
 {
-	std::ifstream vertex_file(shader_filepath);
+	std::fstream vertex_file(shader_filepath);
 	if (vertex_file.fail())
 		fatal_error("Файл шейдера НЕ был открыт: " + shader_filepath);
 
-	std::string file_data{};
+	std::string file_data = "";
 	std::string line{};
 
 	while (std::getline(vertex_file, line))
@@ -118,7 +114,7 @@ void GLSLProgram::compile_shader(const std::string& shader_filepath, GLuint &id)
 		GLint maxLength = 0;
 		glGetShaderiv(id, GL_INFO_LOG_LENGTH, &maxLength);
 
-		std::vector<GLchar> error_log(maxLength);
+		std::vector<char> error_log(maxLength);
 		glGetShaderInfoLog(id, maxLength, &maxLength, &error_log[0]);
 
 		glDeleteShader(id);

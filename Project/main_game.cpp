@@ -27,15 +27,16 @@ void Game::run()
 {
 	init_system();
 
-	m_sprite.init(-1.0f, -1.0f, 1.0f, 1.0f);
+	m_sprite.init(-0.5f, -0.5f, 2.0f, 2.0f);
 
 	game_loop();
 }
 
 void Game::init_shaders()
 {
-	m_color_program.compile_shaders("C:\\Users\\User\\Desktop\\Code\\Visual\\SDL\\SDL\\Project\\Shaders\\fragment_shader.txt","C:\\Users\\User\\Desktop\\Code\\Visual\\SDL\\SDL\\Project\\Shaders\\vertex_shader.txt");
+	m_color_program.compile_shaders("Shaders/vertex_shader.txt","Shaders/fragment_shader.txt");
 	m_color_program.add_attribute("vertexPosition");
+	m_color_program.add_attribute("vertexColor");
 	m_color_program.link_shaders();
 }
 
@@ -44,7 +45,7 @@ void Game::init_system()
 	setlocale(0, "");
 
 	SDL_Init(SDL_INIT_EVERYTHING);
-	m_window = SDL_CreateWindow("HU`ESOS", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, m_WIDTH, m_HEIGHT, SDL_WINDOW_OPENGL);
+	m_window = SDL_CreateWindow("CHLENOZAVR", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, m_WIDTH, m_HEIGHT, SDL_WINDOW_OPENGL);
 	if (m_window == nullptr)
 		fatal_error("Окно НЕ было открыто!");
 

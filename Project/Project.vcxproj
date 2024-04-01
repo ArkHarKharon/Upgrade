@@ -145,6 +145,7 @@
     <ClInclude Include="GLSL.hpp" />
     <ClInclude Include="main_game.hpp" />
     <ClInclude Include="Sprite.hpp" />
+    <ClInclude Include="Vertex.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

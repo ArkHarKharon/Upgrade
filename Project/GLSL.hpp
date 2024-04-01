@@ -9,6 +9,7 @@
 class GLSLProgram
 {
 	GLuint m_program_ID;
+
 	GLuint m_vertex_shader_ID;
 	GLuint m_fragment_shader_ID;
 	int m_attributes_num;
