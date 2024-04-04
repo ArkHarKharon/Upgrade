@@ -10,10 +10,8 @@
 #include "Sprite.hpp"
 #include "Vertex.hpp"
 
-Sprite::Sprite()
-{
-	m_vboID = 0;
-}
+Sprite::Sprite(): m_vboID{0}
+{}
 
 Sprite::~Sprite()
 {
@@ -52,15 +50,41 @@ void Sprite::init(float x, float y, float width, float height)
 	vertex_data.at(5).position.y = y + height;
 
 
-	for (int i = 0; i < vertex_data.size(); i++)
-	{
-		vertex_data.at(i).color.blue = 255;
-		vertex_data.at(i).color.red = 255;
-		vertex_data.at(i).color.green = 0;
-		vertex_data.at(i).color.alpha = 50;
-	}
+	vertex_data.at(0).color.blue = 255;
+	vertex_data.at(0).color.red = 0;
+	vertex_data.at(0).color.green = 0;
+	vertex_data.at(0).color.alpha = 255;
 
-	vertex_data.at(1).color.red = 255;
+	vertex_data.at(1).color.blue = 150;
+	vertex_data.at(1).color.red = 150;
+	vertex_data.at(1).color.green = 0;
+	vertex_data.at(1).color.alpha = 255;
+
+	vertex_data.at(2).color.blue = 0;
+	vertex_data.at(2).color.red = 0;
+	vertex_data.at(2).color.green = 255;
+	vertex_data.at(2).color.alpha = 255;
+
+	vertex_data.at(3).color.blue = 0;
+	vertex_data.at(3).color.red = 0;
+	vertex_data.at(3).color.green = 255;
+	vertex_data.at(3).color.alpha = 255;
+
+	vertex_data.at(4).color.blue = 0;
+	vertex_data.at(4).color.red = 255;
+	vertex_data.at(4).color.green = 0;
+	vertex_data.at(4).color.alpha = 255;
+
+	vertex_data.at(5).color.blue = 255;
+	vertex_data.at(5).color.red = 0;
+	vertex_data.at(5).color.green = 0;
+	vertex_data.at(5).color.alpha = 255;
+
+
+
+	
+
+
 
 	glBindBuffer(GL_ARRAY_BUFFER,m_vboID);
 	glBufferData(GL_ARRAY_BUFFER,sizeof(vertex_data),&vertex_data,GL_STATIC_DRAW);

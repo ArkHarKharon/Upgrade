@@ -69,8 +69,7 @@ void GLSLProgram::link_shaders()
 
 void GLSLProgram::add_attribute(const std::string attribute_name)
 {
-	glBindAttribLocation(m_program_ID, m_attributes_num, attribute_name.c_str());
-	m_attributes_num++;
+	glBindAttribLocation(m_program_ID, m_attributes_num++, attribute_name.c_str());
 }
 
 void GLSLProgram::use()
@@ -124,4 +123,12 @@ void GLSLProgram::compile_shader(const std::string& shader_filepath, GLuint &id)
 			std::cout << ch;
 		fatal_error("Шейдер НЕ был скомпилирован!");
 	}
+}
+
+GLint GLSLProgram::get_uniform_location(const std::string uniform_name)
+{
+	GLint location = glGetUniformLocation(m_program_ID, uniform_name.c_str());
+	if (location == GL_INVALID_INDEX)
+		fatal_error("Форма " + uniform_name + " не найдена в шейдере!");
+	return location;
 }

@@ -6,6 +6,7 @@
 
 #include "Sprite.hpp"
 #include "GLSL.hpp"
+#include "GLTexture.hpp"
 
 
 enum class GameState
@@ -17,14 +18,16 @@ enum class GameState
 class Game
 {
 	SDL_Window* m_window;
-	GameState current_state;
+	GameState m_current_state;
 
-	int m_WIDTH;
-	int m_HEIGHT;
+	int m_window_width;
+	int m_window_height;
 
 	Sprite m_sprite{};
-
 	GLSLProgram m_color_program;
+	GLTexture m_tank_texture;
+
+	float m_time;
 
 	void init_shaders();
 	void init_system(); 

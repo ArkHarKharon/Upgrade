@@ -30,6 +30,15 @@
     <ClCompile Include="Errors.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="IOManager.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="picoPNG.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageLoader.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="main_game.hpp">
@@ -45,6 +54,18 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="Vertex.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="IOManager.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="picoPNG.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="GLTexture.hpp">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageLoader.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

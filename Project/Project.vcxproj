@@ -136,14 +136,21 @@
   <ItemGroup>
     <ClCompile Include="Errors.cpp" />
     <ClCompile Include="GLSL.cpp" />
+    <ClCompile Include="ImageLoader.cpp" />
+    <ClCompile Include="IOManager.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="main_game.cpp" />
+    <ClCompile Include="picoPNG.cpp" />
     <ClCompile Include="Sprite.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Errors.hpp" />
     <ClInclude Include="GLSL.hpp" />
+    <ClInclude Include="GLTexture.hpp" />
+    <ClInclude Include="ImageLoader.hpp" />
+    <ClInclude Include="IOManager.hpp" />
     <ClInclude Include="main_game.hpp" />
+    <ClInclude Include="picoPNG.hpp" />
     <ClInclude Include="Sprite.hpp" />
     <ClInclude Include="Vertex.hpp" />
   </ItemGroup>

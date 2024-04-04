@@ -26,4 +26,5 @@ public:
 	void add_attribute(const std::string attribute_name);
 	void use();
 	void unuse();
+	GLint get_uniform_location(const std::string uniform_name);
 };
