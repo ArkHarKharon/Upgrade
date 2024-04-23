@@ -30,6 +30,8 @@ namespace MyEngine
 		glm::vec2 get_position();
 		float get_scale();
 		glm::mat4 get_cam_matrix();
+
+		glm::vec2 get_world_coords(glm::vec2 screen_coords);
 	};
 
 }

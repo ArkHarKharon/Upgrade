@@ -23,11 +23,8 @@ namespace MyEngine
 		{
 			GLTexture new_texture = ImageLoader::loadPNG(filepath);
 			m_texture_map.insert(make_pair(filepath, new_texture));
-			std::cout << "Использована кэшированная текстура!\n";
 			return new_texture;
 		}
-		std::cout << "Использована текстура!";
-
 		return map_iterator->second;
 	}
 }

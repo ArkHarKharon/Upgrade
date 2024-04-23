@@ -9,8 +9,8 @@ namespace MyEngine
 		m_ortho_matrix{ 1.0f },
 		m_scale{ 1.0f },
 		m_need_update{ true },
-		m_screen_height{ 750 },
-		m_screen_width{ 750 }
+		m_screen_height{ 720 },
+		m_screen_width{ 1080 }
 	{
 
 	}
@@ -69,4 +69,16 @@ namespace MyEngine
 	{
 		return m_cam_matrix;
 	}
+
+	glm::vec2 Camera2D::get_world_coords(glm::vec2 screen_coords)
+	{
+		screen_coords.y = m_screen_height - screen_coords.y;
+
+		screen_coords -= glm::vec2(m_screen_width / 2, m_screen_height / 2);
+		screen_coords /= m_scale;
+		screen_coords += m_position;
+
+		return screen_coords;
+	}
+
 }

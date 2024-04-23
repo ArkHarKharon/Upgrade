@@ -10,6 +10,12 @@
 #include <MyEngine/ImageLoader.hpp>
 #include <MyEngine/Errors.hpp>
 #include <MyEngine/Window.hpp>
+#include <MyEngine/SpriteBatch.hpp>
+#include <MyEngine/ResourceManager.hpp>
+#include <MyEngine/InputManager.hpp>
+#include <MyEngine/Timing.hpp>
+
+#include "GameObjects.hpp"
 
 #include <vector>
 #include <iostream>
@@ -20,37 +26,50 @@
 
 enum class GameState
 {
-	PLAY,
+	MAIN_MENU,
+	UPGRADE_MENU,
+	GAME,
 	EXIT,
 };
 
 class Game
 {
 	MyEngine::Window m_window;
-
-	GameState m_current_state;
-
 	int m_window_width;
 	int m_window_height;
 
-	std::vector<MyEngine::Sprite> m_sprites;
-	MyEngine::GLSLProgram m_color_program;
-
-	float m_time;
-
-	float m_fps;
-	float m_max_fps;
-	float m_frame_time;
+	MyEngine::FPS_Limiter m_fps_limiter;
+	int m_fps;
+	int m_max_fps;
 
 	MyEngine::Camera2D m_camera;
+	float m_cam_speed;
+	float m_cam_scale;
+
+	GameState m_current_state;
+
+	MyEngine::GLSLProgram m_color_program;
+
+	MyEngine::SpriteBatch m_tank_sprite_batch;
+
+	MyEngine::InputManager m_input_manager;
+
+	std::vector<Projectile> m_projectiles;
+
+	std::vector <Level*> m_levels;
+
+	PlayerTank *m_player;
+	std::vector<Tank*> m_tanks;
+
+	float m_time;
 
 	void init_shaders();
 	void init_system(); 
 	void process_input();
 	void game_loop();
 	void draw_game();
-	void fps_counter(int samples_num);
 
+	void init_level();
 public:
 	Game();
 	~Game();

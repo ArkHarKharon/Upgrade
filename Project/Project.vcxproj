@@ -144,11 +144,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="GameObjects.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="main_game.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GameObjects.hpp" />
     <ClInclude Include="main_game.hpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Data\Level.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

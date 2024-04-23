@@ -18,15 +18,6 @@ namespace MyEngine
 	{
 		Uint32 flags = SDL_WINDOW_OPENGL;
 
-		if (flag & INVISIBLE)
-			flags |= SDL_WINDOW_HIDDEN;
-
-		else if (flag & FULLSCREEN)
-			flags |= SDL_WINDOW_FULLSCREEN;
-
-		else if (flag & BORDERLESS)
-			flags |= SDL_WINDOW_BORDERLESS;
-
 		m_sdl_window = SDL_CreateWindow(window_name.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, flags);
 		if (m_sdl_window == nullptr)
 			fatal_error("Окно НЕ было открыто!");
@@ -39,10 +30,13 @@ namespace MyEngine
 		if (error != GLEW_OK)
 			fatal_error("Glew НЕ был инициализирован!");
 
-
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 		SDL_GL_SetSwapInterval(0);
+
+		glEnable(GL_BLEND);
+
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		return 0;
 	}

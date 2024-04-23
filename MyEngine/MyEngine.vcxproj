@@ -148,11 +148,14 @@
     <ClInclude Include="GLSL.hpp" />
     <ClInclude Include="GLTexture.hpp" />
     <ClInclude Include="ImageLoader.hpp" />
+    <ClInclude Include="InputManager.hpp" />
     <ClInclude Include="IOManager.hpp" />
     <ClInclude Include="picoPNG.hpp" />
     <ClInclude Include="ResourceManager.hpp" />
     <ClInclude Include="Sprite.hpp" />
+    <ClInclude Include="SpriteBatch.hpp" />
     <ClInclude Include="TextureCache.hpp" />
+    <ClInclude Include="Timing.hpp" />
     <ClInclude Include="Vertex.hpp" />
     <ClInclude Include="Window.hpp" />
   </ItemGroup>
@@ -161,12 +164,15 @@
     <ClCompile Include="Errors.cpp" />
     <ClCompile Include="GLSL.cpp" />
     <ClCompile Include="ImageLoader.cpp" />
+    <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="IOManager.cpp" />
     <ClCompile Include="MyEngine.cpp" />
     <ClCompile Include="picoPNG.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
     <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="SpriteBatch.cpp" />
     <ClCompile Include="TextureCache.cpp" />
+    <ClCompile Include="Timing.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
