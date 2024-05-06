@@ -81,4 +81,14 @@ namespace MyEngine
 		return screen_coords;
 	}
 
+	int Camera2D::get_screen_width()
+	{
+		return m_screen_width;
+	}
+
+	int Camera2D::get_screen_height()
+	{
+		return m_screen_height;
+	}
+
 }

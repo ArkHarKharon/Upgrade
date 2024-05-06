@@ -58,7 +58,9 @@ class Game
 
 	std::vector <Level*> m_levels;
 
-	PlayerTank *m_player;
+	Tank* m_player1;
+	Tank* m_player2;
+
 	std::vector<Tank*> m_tanks;
 
 	float m_time;

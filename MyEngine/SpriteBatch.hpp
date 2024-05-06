@@ -3,6 +3,7 @@
 #include <SDL.h>
 #include <glew.h>
 #include <glm/glm.hpp>
+#include <glm/gtx/vector_angle.hpp>
 
 #include <iostream>
 #include <algorithm>
@@ -66,6 +67,7 @@ namespace MyEngine
 		static bool compare_back_to_front(Glyph* a, Glyph* b) { return (a->depth > b->depth); };
 		static bool compare_texture(Glyph* a, Glyph* b) { return (a->texture < b->texture); };
 
+		glm::vec2 rotate_point(glm::vec2 position, float angle);
 	public:
 		SpriteBatch();
 		~SpriteBatch();
@@ -74,7 +76,15 @@ namespace MyEngine
 
 		void begin(GlyphSort sort_type = GlyphSort::TEXTURE);
 
-		void draw(const glm::vec4& destination_rect, const glm::vec4& uv_rect, GLuint texture,float depth, const Color& color);
+		void draw(const glm::vec4& destination_rect, const glm::vec4& uv_rect, GLuint texture,float depth, const Color& color, float angle);
+		void draw(const glm::vec4& destination_rect, const glm::vec4& uv_rect, GLuint texture, float depth, const Color& color);
+		void draw(const glm::vec4& destination_rect, const glm::vec4& uv_rect, GLuint texture, float depth, const Color& color, glm::vec2 dir_vec);
+
+		//NonSym -- копии draw() для объектов, у которых ось вращения находится не по центру
+		void non_sym_draw(int spin_x, int spin_y, const glm::vec4& destination_rect, const glm::vec4& uv_rect, GLuint texture, float depth, const Color& color, float angle);
+		void non_sym_draw(int spin_x, int spin_y, const glm::vec4& destination_rect, const glm::vec4& uv_rect, GLuint texture, float depth, const Color& color, glm::vec2 dir_vec);
+
+
 
 		void end();
 
