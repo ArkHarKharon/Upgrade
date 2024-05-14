@@ -40,7 +40,7 @@ bool Projectile::update(std::vector<Tank*> tanks, const std::vector<std::string>
 			return true;
 	}
 
-	if (collide_with_level(level_data) ) // 
+	if (collide_with_level(level_data) ) 
 		return true;
 
 	return false;
@@ -61,7 +61,6 @@ bool Projectile::collide_with_tanks(std::vector<Tank*> tanks)
 		if (dist_x < min_distance and dist_y < min_distance)
 		{
 			tanks.at(i)->apply_damage(m_damage);
-			std::cout << "Прошел урон!" << std::endl;;
 			return true;
 		}
 	}
@@ -205,12 +204,15 @@ bool Tank::is_controlable()
 	return m_control;
 }
 
-void Tank::init(bool control, int hp, int damage, float speed, float turret_speed, int fire_rate,float projectile_speed, float accuracy ,glm::vec2 start_position,std::string tank_filepath, std::string turret_filepath)
+void Tank::init(bool control, int hp, int damage, float speed, int ammo_max, int reload_time, float turret_speed, int fire_rate,float projectile_speed, float accuracy ,glm::vec2 start_position,std::string tank_filepath, std::string turret_filepath)
 {
 	m_control = control;
 	m_hp = hp;
 	m_damage = damage;
 	m_speed = speed;
+	m_ammo_max = ammo_max;
+	m_ammo_current = ammo_max;
+	m_reload_time = reload_time;
 	m_turret_speed = turret_speed;
 	m_fire_rate = fire_rate;
 	m_projectile_speed = projectile_speed;
@@ -219,6 +221,7 @@ void Tank::init(bool control, int hp, int damage, float speed, float turret_spee
 	m_texture.id = MyEngine::ResourceManager::get_texture(tank_filepath).id;
 	m_turret_texture.id = MyEngine::ResourceManager::get_texture(turret_filepath).id;
 	m_frame_counter = 0;
+	m_reload_frame_counter = 0;
 }
 
 bool Tank::update(MyEngine::InputManager input_manager, const std::vector<std::string>& level_data, std::vector <Tank*> tanks, std::vector<Projectile>& projectiles)
@@ -242,10 +245,7 @@ bool Tank::update(MyEngine::InputManager input_manager, const std::vector<std::s
 	collide_with_level(level_data);
 
 	if (m_hp <= 0)
-	{
-		std::cout << ((m_control) ? ("Красный") : ("Синий")) << " танк победил!!!" << std::endl;
 		return true;
-	}
 
 	return false;
 }
@@ -335,10 +335,10 @@ bool Tank::rotate(float dest_angle)
 	if (m_angle >= 6.28)
 		m_angle = 0;
 
-
+	
 	float sub_angle = glm::abs(m_angle - dest_angle);
 
-	if (sub_angle < 0.001)
+	if (sub_angle < 0.002 or (sub_angle <= 3.142 and sub_angle >= 3.138))
 		return true;
 
 	else
@@ -347,16 +347,15 @@ bool Tank::rotate(float dest_angle)
 			m_angle -= 0.003;
 
 		else if (m_angle < dest_angle and sub_angle <= 3.14)
-			m_angle += 0.002;
+			m_angle += 0.003;
 
 		else if (m_angle > dest_angle and sub_angle > 3.14)
-			m_angle += 0.002;
+			m_angle += 0.003;
 
 		else if (m_angle < dest_angle and sub_angle < 3.14)
-			m_angle -= 0.002;
+			m_angle -= 0.003;
 		else
-			m_angle -= 0.002;
-
+			m_angle -= 0.003;
 	}
 	return false;
 }
@@ -379,6 +378,30 @@ void Tank::apply_damage(int damage)
 void Tank::fire(glm::vec2 barrel_pos, glm::vec2 direction, std::vector<Projectile>& projectiles)
 {
 	projectiles.emplace_back(barrel_pos, 10,  direction, m_projectile_speed, m_damage);//
+	m_ammo_current--;
+}
+
+bool Tank::reload()
+{
+	if (m_ammo_current < 0)
+	{
+		if (m_frame_counter <= m_reload_time)
+		{
+			m_reload_frame_counter++;
+			return true;
+		}
+
+		else if (m_frame_counter > m_reload_time)
+		{
+			m_ammo_current = m_ammo_max;
+			m_reload_frame_counter = 0;
+			return false;
+		}
+
+		else return true;
+	}
+
+	else return false;
 }
 
 void Tank::move_1(MyEngine::InputManager& input_manager)
@@ -423,9 +446,9 @@ void Tank::shoot_1(std::vector<Projectile>& bullets, MyEngine::InputManager& inp
 	std::uniform_real_distribution<float> accuracy_angle(-m_accuracy, m_accuracy);
 
 	glm::vec2 top(0.0f, 1.0f);//
-	glm::vec2 direction = glm::rotate(top, m_turret_angle + accuracy_angle(random_engine));//
+	glm::vec2 direction = glm::rotate(top, m_turret_angle + accuracy_angle(random_engine));
 
-	if (m_frame_counter >= m_fire_rate and input_manager.key_is_pressed(SDLK_SPACE))
+	if (!reload() and m_frame_counter >= m_fire_rate and input_manager.key_is_pressed(SDLK_SPACE))
 	{
 		fire(def_pos, direction, bullets);
 		m_frame_counter = 0;
@@ -476,7 +499,7 @@ void Tank::shoot_2(std::vector<Projectile>& bullets, MyEngine::InputManager& inp
 	glm::vec2 top(0.0f, 1.0f);//
 	glm::vec2 direction = glm::rotate(top, m_turret_angle + accuracy_angle(random_engine));//
 
-	if (m_frame_counter >= m_fire_rate and input_manager.key_is_pressed(SDLK_KP_8) )
+	if (!reload() and m_frame_counter >= m_fire_rate and input_manager.key_is_pressed(SDLK_KP_8) )
 	{
 		fire(def_pos, direction, bullets);
 		m_frame_counter = 0;
@@ -484,3 +507,92 @@ void Tank::shoot_2(std::vector<Projectile>& bullets, MyEngine::InputManager& inp
 }
 
 
+
+
+
+
+
+
+
+GameManager::GameManager():
+	m_current_round{0},
+	m_times_blue_won{0},
+	m_times_red_won{0},
+	m_need_new_round{true}
+{}
+
+void GameManager::start_new_session(std::vector <Tank*> tanks)
+{
+	if (!tanks.empty())
+	{
+		for (int j = 0; j < tanks.size(); j++)
+		{
+			delete tanks.at(j);
+			tanks.at(j) = tanks.back();
+			tanks.pop_back();
+		}
+	}
+
+	m_current_round = 0;
+	m_times_blue_won = 0;
+	m_times_red_won = 0;
+	m_need_new_round = true;
+}
+
+void GameManager::session_control()
+{
+	if (m_current_round == 0)
+	{
+		std::cout
+			<< "\t\t\t-----UPGRADE-----\n\n"
+			<< "Добро пожаловать!\n"
+			<< "Игра состоит из 5 раундов, цель игры -- уничтожить противника\n"
+			<< "У каждого танка 1000hp, 100 ед. урона и 50 снарядов в бк\n"
+			<< "Если не нравится игровой баланс -- меня не ебёт -___-\n"
+			<< "Если есть идеи/предложения -- озвучивай, пиши, молись Самоучителю\n\n";
+		m_current_round++;
+	}
+	else if (m_current_round == 6)
+	{
+		std::cout
+			<< std::endl << ((m_times_blue_won > m_times_red_won) ? ("Синий ") : ("Красный ")) << "танк победил!"
+			<< "Счет игры: " << m_times_blue_won << " : " << m_times_red_won << std::endl << std::endl
+			<< "Нажми HOME, чтобы начать новую игру!";
+	}
+}
+
+void GameManager::increm_victory_score(bool control)
+{
+	if (control == false)
+		m_times_blue_won++;
+	else
+		m_times_red_won++;
+
+	m_current_round++;
+}
+
+void GameManager::reload_message(bool control)
+{
+	std::cout << ((control) ? ("Синий ") : ("Красный")) << "танк перезаряжается!";
+}
+
+
+std::pair<int, int> GameManager::get_times_won()
+{
+	return std::make_pair(m_times_blue_won, m_times_red_won);
+}
+
+int GameManager::get_current_round()
+{
+	return m_current_round;
+}
+
+void GameManager::set_need_round(bool need_or_not)
+{
+	m_need_new_round = need_or_not;
+}
+
+bool GameManager::get_need_round()
+{
+	return m_need_new_round;
+}

@@ -1,10 +1,10 @@
 bbbbbbbbbbbbb
-bt          b
+bt    s     b
 b wwww wwww b
 b w       w b
-b w wwwww w b
-b w w   w w b
-b      s    b
+b w wwwww w b   
+b w w   w w b   
+b           b  
 b w w   w w b
 b w wwwww w b
 b w       w b

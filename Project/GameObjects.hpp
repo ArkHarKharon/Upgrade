@@ -67,6 +67,10 @@ protected:
 	float m_projectile_speed;
 	float m_accuracy; //Максимальный угол отклонения снарядов от башни
 
+	int m_ammo_max;
+	int m_ammo_current;
+	int m_reload_time; //Кол-во кдров, которые занимает перезарядка
+
 	float m_turret_angle;
 	float m_turret_speed;
 
@@ -78,11 +82,13 @@ protected:
 	MyEngine::Camera2D m_camera;
 
 	int m_frame_counter;
+	int m_reload_frame_counter;
 
 	void check_tile_pos(const std::vector<std::string>& level_data, std::vector<glm::vec2>& collide_tile_pos, float x, float y);
 	void collide_with_tile(glm::vec2 tile_position);
 
 	void fire(glm::vec2 barrel_pos, glm::vec2 direction, std::vector<Projectile>& bullets);
+	bool reload();
 
 	void move_1(MyEngine::InputManager& input_manager);
 	void turret_rotate_1(MyEngine::InputManager& input_manager);
@@ -103,9 +109,9 @@ protected:
 
 public:
 	Tank();
-	~Tank(); //
+	~Tank();
 
-	void init(bool control, int hp, int damage, float speed, float turret_speed, int fire_rate, float projectile_speed ,float accuracy,  glm::vec2 position, std::string tank_filepath, std::string turret_filepath);
+	void init(bool control, int hp, int damage, float speed, int ammo_max, int reload_time, float turret_speed, int fire_rate, float projectile_speed ,float accuracy,  glm::vec2 position, std::string tank_filepath, std::string turret_filepath);
 
 	glm::vec2 get_position();
 	int get_size();
@@ -151,6 +157,33 @@ public:
 
 	bool collide_with_tanks(std::vector<Tank*> tanks);
 	bool collide_with_level(const std::vector<std::string>& level_data);
+};
+
+
+
+
+class GameManager
+{
+	int m_current_round;
+	int m_times_blue_won;
+	int m_times_red_won;
+
+	bool m_need_new_round;
+	
+public:
+	GameManager();
+
+	std::pair<int, int> get_times_won();
+	int get_current_round();
+
+	bool get_need_round();
+	void set_need_round(bool need_or_not);
+
+	void start_new_session(std::vector <Tank*> tanks);
+	void session_control();
+
+	void increm_victory_score(bool control);
+	void reload_message(bool control);
 };
 
 

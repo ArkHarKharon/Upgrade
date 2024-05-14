@@ -87,10 +87,10 @@ void Game::process_input()
 			break;
 
 		case(SDL_MOUSEWHEEL):
-			if (event.wheel.y > 0)
-				m_camera.set_scale(m_camera.get_scale() + 0.1f);
-			else if (event.wheel.y < 0 and m_camera.get_scale() > 0.1f)
-				m_camera.set_scale(m_camera.get_scale() - 0.1f);
+			//if (event.wheel.y > 0)
+				//m_camera.set_scale(m_camera.get_scale() + 0.1f);
+			//else if (event.wheel.y < 0 and m_camera.get_scale() > 0.1f)
+				//m_camera.set_scale(m_camera.get_scale() - 0.1f);
 			break;
 		
 		}
@@ -102,14 +102,24 @@ void Game::game_loop()
 	while (m_current_state != GameState::EXIT)
 	{
 		process_input();
+		if (m_input_manager.key_is_pressed(SDLK_HOME))
+			m_game_manager.start_new_session(m_tanks);
+
+		m_game_manager.session_control();
+		if (m_game_manager.get_current_round() < 7)
+			start_round();
 		
 		for (int i = 0; i < m_tanks.size(); i++)
 		{
 			if (m_tanks.at(i)->update(m_input_manager, m_levels.at(0)->get_level_data(), m_tanks, m_projectiles))
 			{
-				delete m_tanks.at(i);
-				m_tanks.at(i) = m_tanks.back();
-				m_tanks.pop_back();
+				m_game_manager.increm_victory_score(m_tanks.at(i)->is_controlable());
+
+				if(m_game_manager.get_current_round() != 6)
+					m_game_manager.set_need_round(true);
+
+				start_round();
+				continue;
 			}
 		}
 
@@ -170,15 +180,52 @@ void Game::draw_game()
  void Game::init_level()
 {
 	m_levels.push_back(new Level("Data/Level.txt"));
-
-	m_player1 = new Tank();
-	m_player1->init(true, 1000, 100, 0.1f, 0.003f, 100, 1.0f, 0.1, m_levels.at(0)->get_start_pos(), "C:\\Users\\User\\Desktop\\Code\\Visual\\SDL\\SDL\\Project\\Data\\Textures\\tankBlue.png", "C:\\Users\\User\\Desktop\\Code\\Visual\\SDL\\SDL\\Project\\Data\\Textures\\tankTurret.png");
-	m_tanks.push_back(m_player1);
-
-
-	m_player2 = new Tank();
-	m_player2->init(false, 1000, 100, 0.1f, 0.003f, 100, 1.0f, 0.1, m_levels.at(0)->get_enemy_pos(), "C:\\Users\\User\\Desktop\\Code\\Visual\\SDL\\SDL\\Project\\Data\\Textures\\tankBlue.png", "C:\\Users\\User\\Desktop\\Code\\Visual\\SDL\\SDL\\Project\\Data\\Textures\\tankTurret.png");
-	m_tanks.push_back(m_player2);
-
-
 }
+
+ void Game::start_round()
+ {
+	 if(m_game_manager.get_need_round())
+	 {
+		 for (int j = 0; j < m_tanks.size(); j++)
+		 {
+			 delete m_tanks.at(j);
+			 m_tanks.at(j) = m_tanks.back();
+			 m_tanks.pop_back();
+		 }
+
+		 if (m_game_manager.get_current_round() != 7)
+		 {
+			 std::cout
+				 << "\t\t\tРаунд " << m_game_manager.get_current_round() << std::endl
+				 << "Текущий счёт: " << m_game_manager.get_times_won().first << " : "
+				 << m_game_manager.get_times_won().second << std::endl;
+		 }
+
+		 bool player1 = true;
+		 bool player2 = false;
+		 int hp = 1000;
+		 int damage = 100;
+		 float speed = 0.1f;
+		 int ammo_max = 50;
+		 int reload_time = 10000;
+		 float turret_speed = 0.003f;
+		 int fire_rate = 100;
+		 float projectile_speed = 1.0f;
+		 float accuracy = 0.1f;
+		 glm::vec2 player1_start_pos = m_levels.at(0)->get_start_pos();
+		 glm::vec2 player2_start_pos = m_levels.at(0)->get_enemy_pos();
+		 std::string tank_texture = "Data/Textures/tankBlue.png";
+		 std::string turret_texture = "Data/Textures/tankTurret.png";
+
+		 m_player1 = new Tank();
+		 m_player1->init(player1, hp, damage, speed, ammo_max, reload_time, turret_speed, fire_rate, projectile_speed, accuracy, player1_start_pos, tank_texture, turret_texture);
+		 m_tanks.push_back(m_player1);
+
+
+		 m_player2 = new Tank();
+		 m_player2->init(player2, hp, damage, speed, ammo_max, reload_time, turret_speed, fire_rate, projectile_speed, accuracy, player2_start_pos, tank_texture, turret_texture);
+		 m_tanks.push_back(m_player2);
+
+		 m_game_manager.set_need_round(false);
+	 }
+ }
