@@ -2,8 +2,8 @@
 
 #include <iostream>
 #include <Windows.h>
-#include <SDL.h>
-#include <glew.h>
+#include <SDL/SDL.h>
+#include <GL/glew.h>
 #include <string>
 
 namespace MyEngine

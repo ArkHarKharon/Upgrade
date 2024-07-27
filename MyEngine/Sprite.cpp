@@ -2,8 +2,8 @@
 #include <string>
 #include <array>
 
-#include <SDL.h>
-#include <glew.h>
+#include <SDL/SDL.h>
+#include <GL/glew.h>
 #include <cstddef>
 
 #include "Sprite.hpp"

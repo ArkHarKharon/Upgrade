@@ -4,8 +4,8 @@
 #include <string>
 #include <vector>
 
-#include <SDL.h>
-#include <glew.h>
+#include <SDL/SDL.h>
+#include <GL/glew.h>
 
 #include "GLSL.hpp"
 #include "Errors.hpp"
