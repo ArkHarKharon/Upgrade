@@ -94,7 +94,7 @@ protected:
 	void turret_rotate_1(MyEngine::InputManager& input_manager);
 	void shoot_1(std::vector<Projectile>& bullets, MyEngine::InputManager& input_manager);
 
-	void move_2(MyEngine::InputManager& input_manager);
+	void move_2(MyEngine::InputManager& input_manager, const std::vector<std::string>& level_data);
 	void turret_rotate_2(MyEngine::InputManager& input_manager);
 	void shoot_2(std::vector<Projectile>& bullets, MyEngine::InputManager& input_manager);
 
@@ -158,33 +158,4 @@ public:
 	bool collide_with_tanks(std::vector<Tank*> tanks);
 	bool collide_with_level(const std::vector<std::string>& level_data);
 };
-
-
-
-
-class GameManager
-{
-	int m_current_round;
-	int m_times_blue_won;
-	int m_times_red_won;
-
-	bool m_need_new_round;
-	
-public:
-	GameManager();
-
-	std::pair<int, int> get_times_won();
-	int get_current_round();
-
-	bool get_need_round();
-	void set_need_round(bool need_or_not);
-
-	void start_new_session(std::vector <Tank*> tanks);
-	void session_control();
-
-	void increm_victory_score(bool control);
-	void reload_message(bool control);
-};
-
-
 

@@ -7,10 +7,10 @@ namespace MyEngine
 		m_position{ 0.0f,0.0f },
 		m_cam_matrix{ 1.0f },
 		m_ortho_matrix{ 1.0f },
-		m_scale{ 1.0f },
+		m_scale{ 0.5f },
 		m_need_update{ true },
-		m_screen_height{ 720 },
-		m_screen_width{ 1080 }
+		m_screen_height{1000 },
+		m_screen_width{1000 }
 	{
 
 	}

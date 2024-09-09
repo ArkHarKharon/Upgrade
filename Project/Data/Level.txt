@@ -1,13 +1,13 @@
-bbbbbbbbbbbbb
-bt    s     b
-b wwww wwww b
-b w       w b
-b w wwwww w b   
-b w w   w w b   
-b           b  
-b w w   w w b
-b w wwwww w b
-b w       w b
-b wwww wwww b
-b           b
-bbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbb
+b                       b
+b www   www   www   www b
+b w       w   w       w b
+b w ww ww w   w ww ww w b
+b       w       w       b
+b                       b
+b       w       w       b
+b w ww ww w   w ww ww w b
+b w       w   w       w b
+b www   www   www   www b
+b                       b
+bbbbbbbbbbbbbbbbbbbbbbbbb

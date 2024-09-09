@@ -63,9 +63,9 @@ class Game
 
 	std::vector<Tank*> m_tanks;
 
-	GameManager m_game_manager;
-
 	float m_time;
+
+	bool m_game_is_started;
 
 	void init_shaders();
 	void init_system(); 

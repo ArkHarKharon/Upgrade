@@ -2,13 +2,14 @@
 
 
 Game::Game() :
-	m_window_width{ 800 }, m_window_height{ 800 },
+	m_window_width{ 750 }, m_window_height{ 750 },
 	m_current_state{ GameState::GAME },
 	m_time{ 0.0f },
 	m_fps{ 0 },
 	m_max_fps{ 0 },
 	m_cam_speed{0.2f},
-	m_cam_scale{0.0f}
+	m_cam_scale{1.0f},
+	m_game_is_started{false}
 {
 	m_camera.init_camera(m_window_height, m_window_width);
 }
@@ -102,25 +103,16 @@ void Game::game_loop()
 	while (m_current_state != GameState::EXIT)
 	{
 		process_input();
-		if (m_input_manager.key_is_pressed(SDLK_HOME))
-			m_game_manager.start_new_session(m_tanks);
-
-		m_game_manager.session_control();
-		if (m_game_manager.get_current_round() < 7)
+		
+		if (!m_game_is_started)
+		{
 			start_round();
+			m_game_is_started = true;
+		}
 		
 		for (int i = 0; i < m_tanks.size(); i++)
 		{
-			if (m_tanks.at(i)->update(m_input_manager, m_levels.at(0)->get_level_data(), m_tanks, m_projectiles))
-			{
-				m_game_manager.increm_victory_score(m_tanks.at(i)->is_controlable());
-
-				if(m_game_manager.get_current_round() != 6)
-					m_game_manager.set_need_round(true);
-
-				start_round();
-				continue;
-			}
+			m_tanks.at(i)->update(m_input_manager, m_levels.at(0)->get_level_data(), m_tanks, m_projectiles);
 		}
 
 		m_camera.set_position(glm::vec2(m_levels.at(0)->get_level_data().at(0).size() * 32, m_levels.at(0)->get_level_data().at(0).size() * 32));
@@ -184,22 +176,6 @@ void Game::draw_game()
 
  void Game::start_round()
  {
-	 if(m_game_manager.get_need_round())
-	 {
-		 for (int j = 0; j < m_tanks.size(); j++)
-		 {
-			 delete m_tanks.at(j);
-			 m_tanks.at(j) = m_tanks.back();
-			 m_tanks.pop_back();
-		 }
-
-		 if (m_game_manager.get_current_round() != 7)
-		 {
-			 std::cout
-				 << "\t\t\tРаунд " << m_game_manager.get_current_round() << std::endl
-				 << "Текущий счёт: " << m_game_manager.get_times_won().first << " : "
-				 << m_game_manager.get_times_won().second << std::endl;
-		 }
 
 		 bool player1 = true;
 		 bool player2 = false;
@@ -226,6 +202,5 @@ void Game::draw_game()
 		 m_player2->init(player2, hp, damage, speed, ammo_max, reload_time, turret_speed, fire_rate, projectile_speed, accuracy, player2_start_pos, tank_texture, turret_texture);
 		 m_tanks.push_back(m_player2);
 
-		 m_game_manager.set_need_round(false);
-	 }
+	 
  }

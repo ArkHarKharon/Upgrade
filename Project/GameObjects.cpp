@@ -72,7 +72,7 @@ bool Projectile::collide_with_level(const std::vector<std::string>& level_data)
 {
 	glm::ivec2 grid_pos(floor(m_position.x / TILE_SIZE), floor(m_position.y / TILE_SIZE));
 
-	if (level_data.at(grid_pos.x).at(grid_pos.y) == 'w' or level_data.at(grid_pos.x).at(grid_pos.y) == 'b')
+	if (level_data.at(grid_pos.y).at(grid_pos.x) == 'w' or level_data.at(grid_pos.y).at(grid_pos.x) == 'b')
 		return true;
 
 	else 
@@ -87,7 +87,7 @@ bool Projectile::collide_with_level(const std::vector<std::string>& level_data)
 
 
 
-Level::Level(const std::string& level_file) : m_tile_size{TILE_SIZE}
+Level::Level(const std::string& level_file) : m_tile_size{ TILE_SIZE }, m_start_position{ m_tile_size, m_tile_size }, m_enemy_position{ m_tile_size * 2, m_tile_size }
 {
 	std::ifstream file;
 	file.open(level_file);
@@ -105,7 +105,7 @@ Level::Level(const std::string& level_file) : m_tile_size{TILE_SIZE}
 	glm::vec4 uv_rect(0.0f,0.0f,1.0f, 1.0f);
 	MyEngine::Color color{ 255,255,255,255 };
 
-	glm::vec4 grass_dest_rect(0.0f, 0.0f, m_level_data.at(1).size() * TILE_SIZE, m_level_data.size() * TILE_SIZE);
+	glm::vec4 grass_dest_rect(0.0f, 0.0f, m_level_data.at(0).size() * TILE_SIZE, m_level_data.size() * TILE_SIZE);
 	m_sprite_batch.draw(grass_dest_rect, uv_rect, MyEngine::ResourceManager::get_texture("Data/Textures/grass.png").id, 0.0f,color);
 
 	for (int y = 0; y < m_level_data.size(); y++)
@@ -113,7 +113,7 @@ Level::Level(const std::string& level_file) : m_tile_size{TILE_SIZE}
 		for (int x = 0; x < m_level_data.at(y).size(); x++)
 		{
 			char tile = m_level_data.at(y).at(x);
-			glm::vec4 dest_rect(y * m_tile_size, x * m_tile_size, m_tile_size, m_tile_size);
+			glm::vec4 dest_rect(x * m_tile_size, y * m_tile_size, m_tile_size, m_tile_size);
 
 			switch (tile)
 			{
@@ -123,7 +123,7 @@ Level::Level(const std::string& level_file) : m_tile_size{TILE_SIZE}
 					0.0f, color);
 				break;
 
-			case('t'):
+			case('e'):
 				m_enemy_position = glm::ivec2(x * m_tile_size, y * m_tile_size);
 				m_level_data.at(y).at(x) = ' ';
 				break;
@@ -131,7 +131,7 @@ Level::Level(const std::string& level_file) : m_tile_size{TILE_SIZE}
 			case(' '):
 				break;
 
-			case('e'):
+			case('z'):
 				///
 				m_level_data.at(y).at(x) = ' ';
 				break;
@@ -189,7 +189,7 @@ std::vector<std::string>& Level::get_level_data()
 
 
 
-Tank::Tank(): m_tank_size{48}, m_angle{0}, m_turret_angle{0.0f}
+Tank::Tank(): m_tank_size{64}, m_angle{0}, m_turret_angle{0.0f}
 {
 
 }
@@ -237,7 +237,7 @@ bool Tank::update(MyEngine::InputManager input_manager, const std::vector<std::s
 
 	else if(!is_controlable())
 	{
-		move_2(input_manager);
+		move_2(input_manager, level_data);
 		turret_rotate_2(input_manager);
 		shoot_2(projectiles, input_manager);
 	}
@@ -258,7 +258,7 @@ void Tank::draw(MyEngine::SpriteBatch& sprite_batch)
 	const MyEngine::Color player_color{ 255,255,255,255 };
 	const MyEngine::Color enemy_color{ 255,150,150,255 };
 
-	glm::vec4 turret_dest_rect(m_position.x + 6.5f, m_position.y - 25, 34, 100);
+	glm::vec4 turret_dest_rect(m_position.x + 9, m_position.y - 30, 45, 125);
 
 	if (is_controlable())
 	{
@@ -277,7 +277,7 @@ void Tank::check_tile_pos(const std::vector<std::string>& level_data, std::vecto
 {
 	glm::vec2 tile_pos = glm::vec2(floor(x / TILE_SIZE), floor(y / TILE_SIZE));
 
-	if (level_data.at(tile_pos.x).at(tile_pos.y) != ' ')
+	if (level_data.at(tile_pos.y).at(tile_pos.x) != ' ')
 		collide_tile_pos.push_back(tile_pos * (float)TILE_SIZE + glm::vec2((float)TILE_SIZE / 2.0f));
 }
 
@@ -455,31 +455,9 @@ void Tank::shoot_1(std::vector<Projectile>& bullets, MyEngine::InputManager& inp
 	}
 }
 
-void Tank::move_2(MyEngine::InputManager& input_manager)
+void Tank::move_2(MyEngine::InputManager& input_manager, const std::vector<std::string>& level_data)
 {
-	if (input_manager.key_is_pressed(SDLK_UP))
-	{
-		if (rotate(m_direction.up) == true) 
-			m_position.y += m_speed;
-	}
-
-	else if (input_manager.key_is_pressed(SDLK_DOWN))
-	{
-		if (rotate(m_direction.down) == true)
-			m_position.y -= m_speed;
-	}
-
-	else if (input_manager.key_is_pressed(SDLK_LEFT))
-	{
-		if (rotate(m_direction.left) == true)
-			m_position.x -= m_speed;
-	}
-
-	else if (input_manager.key_is_pressed(SDLK_RIGHT))
-	{
-		if (rotate(m_direction.right) == true)
-			m_position.x += m_speed;
-	}
+	
 }
 
 void Tank::turret_rotate_2(MyEngine::InputManager& input_manager)
@@ -506,93 +484,3 @@ void Tank::shoot_2(std::vector<Projectile>& bullets, MyEngine::InputManager& inp
 	}
 }
 
-
-
-
-
-
-
-
-
-GameManager::GameManager():
-	m_current_round{0},
-	m_times_blue_won{0},
-	m_times_red_won{0},
-	m_need_new_round{true}
-{}
-
-void GameManager::start_new_session(std::vector <Tank*> tanks)
-{
-	if (!tanks.empty())
-	{
-		for (int j = 0; j < tanks.size(); j++)
-		{
-			delete tanks.at(j);
-			tanks.at(j) = tanks.back();
-			tanks.pop_back();
-		}
-	}
-
-	m_current_round = 0;
-	m_times_blue_won = 0;
-	m_times_red_won = 0;
-	m_need_new_round = true;
-}
-
-void GameManager::session_control()
-{
-	if (m_current_round == 0)
-	{
-		std::cout
-			<< "\t\t\t-----UPGRADE-----\n\n"
-			<< "Добро пожаловать!\n"
-			<< "Игра состоит из 5 раундов, цель игры -- уничтожить противника\n"
-			<< "У каждого танка 1000hp, 100 ед. урона и 50 снарядов в бк\n"
-			<< "Если не нравится игровой баланс -- меня не ебёт -___-\n"
-			<< "Если есть идеи/предложения -- озвучивай, пиши, молись Самоучителю\n\n";
-		m_current_round++;
-	}
-	else if (m_current_round == 6)
-	{
-		std::cout
-			<< std::endl << ((m_times_blue_won > m_times_red_won) ? ("Синий ") : ("Красный ")) << "танк победил!"
-			<< "Счет игры: " << m_times_blue_won << " : " << m_times_red_won << std::endl << std::endl
-			<< "Нажми HOME, чтобы начать новую игру!";
-	}
-}
-
-void GameManager::increm_victory_score(bool control)
-{
-	if (control == false)
-		m_times_blue_won++;
-	else
-		m_times_red_won++;
-
-	m_current_round++;
-}
-
-void GameManager::reload_message(bool control)
-{
-	std::cout << ((control) ? ("Синий ") : ("Красный")) << "танк перезаряжается!";
-}
-
-
-std::pair<int, int> GameManager::get_times_won()
-{
-	return std::make_pair(m_times_blue_won, m_times_red_won);
-}
-
-int GameManager::get_current_round()
-{
-	return m_current_round;
-}
-
-void GameManager::set_need_round(bool need_or_not)
-{
-	m_need_new_round = need_or_not;
-}
-
-bool GameManager::get_need_round()
-{
-	return m_need_new_round;
-}
