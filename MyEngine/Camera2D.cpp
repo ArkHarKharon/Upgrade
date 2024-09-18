@@ -7,10 +7,10 @@ namespace MyEngine
 		m_position{ 0.0f,0.0f },
 		m_cam_matrix{ 1.0f },
 		m_ortho_matrix{ 1.0f },
-		m_scale{ 0.5f },
+		m_scale{ 1.0f },
 		m_need_update{ true },
-		m_screen_height{1000 },
-		m_screen_width{1000 }
+		m_screen_height{ (float)13*32},
+		m_screen_width{(float)25*32 }
 	{
 
 	}
@@ -20,11 +20,11 @@ namespace MyEngine
 
 	}
 
-	void Camera2D::init_camera(int screen_width, int screen_height)
+	void Camera2D::init_camera(float screen_width, float screen_height)
 	{
 		m_screen_width = screen_width;
 		m_screen_height = screen_height;
-		m_ortho_matrix = glm::ortho(0.0f, (float)m_screen_width, 0.0f, (float)m_screen_height);
+		m_ortho_matrix = glm::ortho(0.0f, m_screen_width, 0.0f, m_screen_height);
 
 	}
 
@@ -32,13 +32,14 @@ namespace MyEngine
 	{
 		if (m_need_update)
 		{
-			glm::vec3 translate{ -m_position.x + m_screen_width / 2, -m_position.y + m_screen_height / 2, 0.0f };
+			glm::vec3 translate( - m_position.x + m_screen_width / 2, -m_position.y + m_screen_height / 2, 0.0f );
 			m_cam_matrix = glm::translate(m_ortho_matrix, translate);
 
 			glm::vec3 scale{ m_scale,m_scale,0.0f };
 			m_cam_matrix = glm::scale(glm::mat4(1.0f), scale) * m_cam_matrix;
 
 			m_need_update = false;
+
 		}
 	}
 

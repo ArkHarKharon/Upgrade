@@ -17,8 +17,9 @@ namespace MyEngine
 	int Window::create(std::string window_name, int screen_width, int screen_height, unsigned int flag)
 	{
 		Uint32 flags = SDL_WINDOW_OPENGL;
+		flags = flags | SDL_WINDOW_RESIZABLE;
 
-		m_sdl_window = SDL_CreateWindow(window_name.c_str(), SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, screen_width, screen_height, flags);
+		m_sdl_window = SDL_CreateWindow(window_name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen_width, screen_height, flags);
 		if (m_sdl_window == nullptr)
 			fatal_error("Окно НЕ было открыто!");
 

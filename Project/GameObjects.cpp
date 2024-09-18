@@ -238,7 +238,7 @@ bool Tank::update(MyEngine::InputManager input_manager, const std::vector<std::s
 	else if(!is_controlable())
 	{
 		move_2(input_manager, level_data);
-		turret_rotate_2(input_manager);
+		turret_rotate_2(input_manager, tanks.at(0));
 		shoot_2(projectiles, input_manager);
 	}
 
@@ -433,10 +433,52 @@ void Tank::move_1(MyEngine::InputManager& input_manager)
 
 void Tank::turret_rotate_1(MyEngine::InputManager& input_manager)
 {
-	if (input_manager.key_is_pressed(SDLK_c))
-		m_turret_angle -= m_turret_speed;
-	else if (input_manager.key_is_pressed(SDLK_x))
-		m_turret_angle += m_turret_speed;
+	if (m_turret_angle < 0)
+		m_turret_angle = 6.283 + m_turret_angle;
+
+	if (m_turret_angle >= 6.283)
+		m_turret_angle = 0;
+
+
+	glm::vec2 pos = glm::vec2(m_position.x + m_tank_size / 2, 768 - m_position.y + m_tank_size / 2);
+	glm::vec2 mouse = input_manager.get_mouse_coords();
+	mouse = glm::vec2(mouse.x * 2, mouse.y * 2);
+
+	float angle = 0;
+
+	if (mouse.x > pos.x and mouse.y < pos.y)
+		angle = 6.28 - glm::atan((mouse.x - pos.x) / (pos.y - mouse.y));
+
+	else if (mouse.x < pos.x and mouse.y < pos.y)
+		angle = glm::atan((pos.x - mouse.x) / (pos.y - mouse.y));
+
+	else if (mouse.x < pos.x and mouse.y > pos.y)
+		angle = 1.57 + glm::atan((mouse.y - pos.y) / (pos.x - mouse.x));
+
+	else if (mouse.x > pos.x and mouse.y > pos.y)
+		angle = 3.14 + glm::atan((mouse.x - pos.x) / (mouse.y - pos.y));
+
+	float sub_angle = glm::abs(m_turret_angle - angle);
+
+	if (sub_angle < 0.002 or (sub_angle <= 3.142 and sub_angle >= 3.138))
+		return;
+
+	else
+	{
+		if (m_turret_angle > angle and sub_angle <= 3.14)
+			m_turret_angle -= 0.003;
+
+		else if (m_turret_angle < angle and sub_angle <= 3.14)
+			m_turret_angle += 0.003;
+
+		else if (m_turret_angle > angle and sub_angle > 3.14)
+			m_turret_angle += 0.003;
+
+		else if (m_turret_angle < angle and sub_angle < 3.14)
+			m_turret_angle -= 0.003;
+		else
+			m_turret_angle -= 0.003;
+	}
 }
 
 void Tank::shoot_1(std::vector<Projectile>& bullets, MyEngine::InputManager& input_manager)
@@ -448,7 +490,7 @@ void Tank::shoot_1(std::vector<Projectile>& bullets, MyEngine::InputManager& inp
 	glm::vec2 top(0.0f, 1.0f);//
 	glm::vec2 direction = glm::rotate(top, m_turret_angle + accuracy_angle(random_engine));
 
-	if (!reload() and m_frame_counter >= m_fire_rate and input_manager.key_is_pressed(SDLK_SPACE))
+	if (!reload() and m_frame_counter >= m_fire_rate and input_manager.key_is_pressed(SDL_BUTTON_LEFT))
 	{
 		fire(def_pos, direction, bullets);
 		m_frame_counter = 0;
@@ -460,12 +502,54 @@ void Tank::move_2(MyEngine::InputManager& input_manager, const std::vector<std::
 	
 }
 
-void Tank::turret_rotate_2(MyEngine::InputManager& input_manager)
+void Tank::turret_rotate_2(MyEngine::InputManager& input_manager, Tank* player)
 {
-	if (input_manager.key_is_pressed(SDLK_KP_6))
-		m_turret_angle -= m_turret_speed;
-	else if (input_manager.key_is_pressed(SDLK_KP_4))
-		m_turret_angle += m_turret_speed;
+	if (m_turret_angle < 0)
+		m_turret_angle = 6.283 + m_turret_angle;
+
+	if (m_turret_angle >= 6.283)
+		m_turret_angle = 0;
+
+
+	glm::vec2 pos = glm::vec2(m_position.x + m_tank_size / 2, 768 - m_position.y + m_tank_size / 2);
+	glm::vec2 temp_player = player->get_position();
+	glm::vec2 player_pos = glm::vec2(temp_player.x + m_tank_size / 2, 768 - temp_player.y + m_tank_size / 2);
+
+	float angle = 0;
+
+	if (player_pos.x > pos.x and player_pos.y < pos.y)
+		angle = 6.28 - glm::atan((player_pos.x - pos.x) / (pos.y - player_pos.y));
+
+	else if (player_pos.x < pos.x and player_pos.y < pos.y)
+		angle = glm::atan((pos.x - player_pos.x) / (pos.y - player_pos.y));
+
+	else if (player_pos.x < pos.x and player_pos.y > pos.y)
+		angle = 1.57 + glm::atan((player_pos.y - pos.y) / (pos.x - player_pos.x));
+
+	else if (player_pos.x > pos.x and player_pos.y > pos.y)
+		angle = 3.14 + glm::atan((player_pos.x - pos.x) / (player_pos.y - pos.y));
+
+	float sub_angle = glm::abs(m_turret_angle - angle);
+
+	if (sub_angle < 0.002 or (sub_angle <= 3.142 and sub_angle >= 3.138))
+		return;
+
+	else
+	{
+		if (m_turret_angle > angle and sub_angle <= 3.14)
+			m_turret_angle -= 0.003;
+
+		else if (m_turret_angle < angle and sub_angle <= 3.14)
+			m_turret_angle += 0.003;
+
+		else if (m_turret_angle > angle and sub_angle > 3.14)
+			m_turret_angle += 0.003;
+
+		else if (m_turret_angle < angle and sub_angle < 3.14)
+			m_turret_angle -= 0.003;
+		else
+			m_turret_angle -= 0.003;
+	}
 }
 
 void Tank::shoot_2(std::vector<Projectile>& bullets, MyEngine::InputManager& input_manager)

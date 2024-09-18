@@ -2,16 +2,16 @@
 
 
 Game::Game() :
-	m_window_width{ 750 }, m_window_height{ 750 },
+	m_window_width{(float)25*32}, m_window_height{(float)13*32 },
 	m_current_state{ GameState::GAME },
 	m_time{ 0.0f },
 	m_fps{ 0 },
 	m_max_fps{ 0 },
 	m_cam_speed{0.2f},
-	m_cam_scale{1.0f},
+	m_cam_scale{0.0f},
 	m_game_is_started{false}
 {
-	m_camera.init_camera(m_window_height, m_window_width);
+	m_camera.init_camera(m_window_width, m_window_height);
 }
 
 Game::~Game()
@@ -45,14 +45,14 @@ void Game::init_system()
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-	m_window.create("Upgrade!", m_window_width, m_window_height, SDL_WINDOW_OPENGL);
+	m_window.create("Upgrade!", m_window_width, m_window_height, MyEngine::WindowFlag::FULLSCREEN);
 
 	init_shaders();
-
 
 	m_tank_sprite_batch.init();
 
 	m_fps_limiter.init(m_max_fps);
+
 }
 
 void Game::process_input()
@@ -72,11 +72,12 @@ void Game::process_input()
 			break;
 
 		case(SDL_MOUSEBUTTONDOWN):
-			
+			m_input_manager.press_key(event.button.button);
+			break;
 
-		//case(SDL_MOUSEBUTTONUP):
-			//m_input_manager.release_key(event.button.button);
-			//break;
+		case(SDL_MOUSEBUTTONUP):
+			m_input_manager.release_key(event.button.button);
+			break;
 
 
 		case(SDL_KEYDOWN):
@@ -85,13 +86,6 @@ void Game::process_input()
 
 		case(SDL_KEYUP):
 			m_input_manager.release_key(event.key.keysym.sym);
-			break;
-
-		case(SDL_MOUSEWHEEL):
-			//if (event.wheel.y > 0)
-				//m_camera.set_scale(m_camera.get_scale() + 0.1f);
-			//else if (event.wheel.y < 0 and m_camera.get_scale() > 0.1f)
-				//m_camera.set_scale(m_camera.get_scale() - 0.1f);
 			break;
 		
 		}
@@ -104,6 +98,7 @@ void Game::game_loop()
 	{
 		process_input();
 		
+		glm::vec2 pos = m_input_manager.get_mouse_coords();
 		if (!m_game_is_started)
 		{
 			start_round();
@@ -115,7 +110,10 @@ void Game::game_loop()
 			m_tanks.at(i)->update(m_input_manager, m_levels.at(0)->get_level_data(), m_tanks, m_projectiles);
 		}
 
-		m_camera.set_position(glm::vec2(m_levels.at(0)->get_level_data().at(0).size() * 32, m_levels.at(0)->get_level_data().at(0).size() * 32));
+		m_camera.set_position(glm::vec2(64 * 12.5f,64 * 6.5f));
+		m_camera.set_scale(0.5f);
+
+
 		m_camera.update();
 
 		for (int i = 0; i < m_projectiles.size();)

@@ -95,7 +95,7 @@ protected:
 	void shoot_1(std::vector<Projectile>& bullets, MyEngine::InputManager& input_manager);
 
 	void move_2(MyEngine::InputManager& input_manager, const std::vector<std::string>& level_data);
-	void turret_rotate_2(MyEngine::InputManager& input_manager);
+	void turret_rotate_2(MyEngine::InputManager& input_manager, Tank* player);
 	void shoot_2(std::vector<Projectile>& bullets, MyEngine::InputManager& input_manager);
 
 

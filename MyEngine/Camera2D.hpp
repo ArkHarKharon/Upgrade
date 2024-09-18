@@ -15,14 +15,14 @@ namespace MyEngine
 		glm::mat4 m_ortho_matrix;
 		float m_scale;
 		bool m_need_update;
-		int m_screen_width;
-		int m_screen_height;
+		float m_screen_width;
+		float m_screen_height;
 
 	public:
 		Camera2D();
 		~Camera2D();
 
-		void init_camera(int screen_width, int screen_height);
+		void init_camera(float screen_width, float screen_height);
 
 		void update();
 

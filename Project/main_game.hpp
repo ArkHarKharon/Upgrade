@@ -35,8 +35,8 @@ enum class GameState
 class Game
 {
 	MyEngine::Window m_window;
-	int m_window_width;
-	int m_window_height;
+	float m_window_width;
+	float m_window_height;
 
 	MyEngine::FPS_Limiter m_fps_limiter;
 	int m_fps;
