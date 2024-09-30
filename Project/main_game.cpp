@@ -39,6 +39,7 @@ void Game::init_shaders()
 void Game::init_system()
 {
 	setlocale(0, "");
+	srand(time(0));
 
 	SDL_Init(SDL_INIT_EVERYTHING);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
@@ -107,12 +108,16 @@ void Game::game_loop()
 		
 		for (int i = 0; i < m_tanks.size(); i++)
 		{
-			m_tanks.at(i)->update(m_input_manager, m_levels.at(0)->get_level_data(), m_tanks, m_projectiles);
+			if (m_tanks.at(i)->update(m_input_manager, m_levels.at(0)->get_level_data(), m_tanks, m_projectiles))
+			{
+				m_tanks.at(i) = m_tanks.back();
+				m_tanks.pop_back();
+			}
+				
 		}
 
 		m_camera.set_position(glm::vec2(64 * 12.5f,64 * 6.5f));
 		m_camera.set_scale(0.5f);
-
 
 		m_camera.update();
 
@@ -148,15 +153,13 @@ void Game::draw_game()
 
 	m_levels.at(0)->draw();
 
+	for (int i = 0; i < m_projectiles.size(); i++)
+		m_projectiles.at(i).draw(m_tank_sprite_batch);
 
 	for (int i = 0; i < m_tanks.size(); i++)
 	{
 		m_tanks.at(i)->draw(m_tank_sprite_batch);
 	}
-
-	for (int i = 0; i < m_projectiles.size(); i++)
-		m_projectiles.at(i).draw(m_tank_sprite_batch);
-
 
 	m_tank_sprite_batch.end();
 
@@ -178,27 +181,45 @@ void Game::draw_game()
 		 bool player1 = true;
 		 bool player2 = false;
 		 int hp = 1000;
-		 int damage = 100;
+		 int damage = 50;
 		 float speed = 0.1f;
 		 int ammo_max = 50;
-		 int reload_time = 10000;
+		 int reload_time = 5000;
 		 float turret_speed = 0.003f;
 		 int fire_rate = 100;
-		 float projectile_speed = 1.0f;
-		 float accuracy = 0.1f;
+		 float projectile_speed = 0.5f;
+		 float accuracy = 0.01f;
 		 glm::vec2 player1_start_pos = m_levels.at(0)->get_start_pos();
-		 glm::vec2 player2_start_pos = m_levels.at(0)->get_enemy_pos();
+		 std::vector<glm::vec2> player2_start_pos;
 		 std::string tank_texture = "Data/Textures/tankBlue.png";
 		 std::string turret_texture = "Data/Textures/tankTurret.png";
 
 		 m_player1 = new Tank();
-		 m_player1->init(player1, hp, damage, speed, ammo_max, reload_time, turret_speed, fire_rate, projectile_speed, accuracy, player1_start_pos, tank_texture, turret_texture);
+		 m_player1->init(player1, hp * 1.5 , damage, speed * 1.5 , ammo_max, reload_time, turret_speed, fire_rate, projectile_speed, accuracy, player1_start_pos, tank_texture, turret_texture);
 		 m_tanks.push_back(m_player1);
 
 
-		 m_player2 = new Tank();
-		 m_player2->init(player2, hp, damage, speed, ammo_max, reload_time, turret_speed, fire_rate, projectile_speed, accuracy, player2_start_pos, tank_texture, turret_texture);
-		 m_tanks.push_back(m_player2);
+		 Tank* bot1 = new Tank();
+		 Tank* bot2 = new Tank();
+		 Tank* bot3 = new Tank();
+		 Tank* bot4 = new Tank();
+		 Tank* bot5 = new Tank();
 
-	 
+		 m_bots.push_back(bot1);
+		 m_bots.push_back(bot2);
+		 m_bots.push_back(bot3);
+		 m_bots.push_back(bot4);
+		 m_bots.push_back(bot5);
+
+		 player2_start_pos.resize(m_bots.size());
+		 for (size_t i = 0; i < m_bots.size(); i++)
+		 {
+			 player2_start_pos.at(i) = m_levels.at(0)->get_enemy_pos();
+		 }
+
+		 for (size_t i = 0; i < m_bots.size(); i++)
+		 {
+			 m_bots.at(i)->init(player2, hp, damage, speed, ammo_max, reload_time, turret_speed, fire_rate, projectile_speed, accuracy, player2_start_pos.at(i), tank_texture, turret_texture);
+			 m_tanks.push_back(m_bots.at(i));
+		 }
  }

@@ -49,7 +49,7 @@ class Game
 	GameState m_current_state;
 
 	MyEngine::GLSLProgram m_color_program;
-
+	
 	MyEngine::SpriteBatch m_tank_sprite_batch;
 
 	MyEngine::InputManager m_input_manager;
@@ -60,6 +60,8 @@ class Game
 
 	Tank* m_player1;
 	Tank* m_player2;
+
+	std::vector<Tank*> m_bots;
 
 	std::vector<Tank*> m_tanks;
 

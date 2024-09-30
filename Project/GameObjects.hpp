@@ -33,17 +33,18 @@ class Level
 	GLuint m_texture_id;
 
 	glm::ivec2 m_start_position;
-	glm::ivec2 m_enemy_position;
+	std::vector<glm::ivec2> m_enemy_positions;
 
 public:
 	Level(const std::string& level_file);
 	~Level();
 
 	 glm::ivec2 const get_start_pos();
-	 glm::ivec2 const get_enemy_pos();
+	 glm::ivec2 get_enemy_pos();
 	std::vector<std::string>& get_level_data();
-	
 
+	int get_random_int(int min, int max);
+	
 	void draw();
 };
 
@@ -75,6 +76,7 @@ protected:
 	float m_turret_speed;
 
 	glm::vec2 m_position;
+	glm::ivec2 m_tank_pos; //в тайлах
 	float m_angle;
 
 	int m_tank_size;
@@ -88,7 +90,7 @@ protected:
 	void collide_with_tile(glm::vec2 tile_position);
 
 	void fire(glm::vec2 barrel_pos, glm::vec2 direction, std::vector<Projectile>& bullets);
-	bool reload();
+	bool reload(MyEngine::InputManager& input_manager);
 
 	void move_1(MyEngine::InputManager& input_manager);
 	void turret_rotate_1(MyEngine::InputManager& input_manager);
@@ -107,6 +109,14 @@ protected:
 		float down = 3.14;
 	}m_direction;
 
+	enum DIRECTIONS
+	{
+		NONE, UP, DOWN, LEFT, RIGHT
+	};
+
+	int m_current_direction;
+	std::vector<int> m_possible_directions;
+
 public:
 	Tank();
 	~Tank();
@@ -114,6 +124,7 @@ public:
 	void init(bool control, int hp, int damage, float speed, int ammo_max, int reload_time, float turret_speed, int fire_rate, float projectile_speed ,float accuracy,  glm::vec2 position, std::string tank_filepath, std::string turret_filepath);
 
 	glm::vec2 get_position();
+
 	int get_size();
 
 	void draw(MyEngine::SpriteBatch& sprite_batch);
