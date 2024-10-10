@@ -3,7 +3,7 @@
 const int TILE_SIZE = 64;
 
 
-Projectile::Projectile(glm::vec2 position, float projectile_size ,glm::vec2 direction, float speed, int damage) : m_lifetime{0}
+Projectile::Projectile(glm::vec2 position, float projectile_size ,glm::vec2 direction, float speed, int damage, bool bot_sender) : m_lifetime{0}
 {
 	m_position = position;
 	m_start_position = m_position;
@@ -11,6 +11,7 @@ Projectile::Projectile(glm::vec2 position, float projectile_size ,glm::vec2 dire
 	m_direction = direction;
 	m_damage = damage;
 	m_projectile_size = projectile_size;
+	m_is_bot_sender = bot_sender;
 }
 
 Projectile::~Projectile()
@@ -33,8 +34,11 @@ bool Projectile::update(std::vector<Tank*> tanks, const std::vector<std::string>
 	m_position += m_direction * m_speed;
 	m_lifetime++;
 
-	if (collide_with_tanks(tanks))
-		return true;
+	if (m_lifetime > 125)
+	{
+		if (collide_with_tanks(tanks))
+			return true;
+	}
 
 	if (collide_with_level(level_data) ) 
 		return true;
@@ -56,9 +60,13 @@ bool Projectile::collide_with_tanks(std::vector<Tank*> tanks)
 
 		if (dist_x < min_distance and dist_y < min_distance)
 		{
-			if(m_lifetime > 150)
+			if (!tanks.at(i)->is_controlable() and m_is_bot_sender)
+				return true;
+			else
+			{
 				tanks.at(i)->apply_damage(m_damage);
-			return true;
+				return true;
+			}
 		}
 	}
 
@@ -208,10 +216,11 @@ bool Tank::is_controlable()
 	return m_control;
 }
 
-void Tank::init(bool control, int hp, int damage, float speed, int ammo_max, int reload_time, float turret_speed, int fire_rate,float projectile_speed, float accuracy ,glm::vec2 start_position,std::string tank_filepath, std::string turret_filepath)
+void Tank::init(bool control, int hp, int damage, float speed, int ammo_max, int reload_time, float turret_speed, int fire_rate,float projectile_speed, float accuracy ,glm::vec2 start_position,std::string tank_filepath, std::string turret_filepath, std::string hp_filepath, std::string ammo_filepath)
 {
 	m_control = control;
 	m_hp = hp;
+	m_max_hp = hp;
 	m_damage = damage;
 	m_speed = speed;
 	m_ammo_max = ammo_max;
@@ -224,6 +233,8 @@ void Tank::init(bool control, int hp, int damage, float speed, int ammo_max, int
 	m_position = start_position;
 	m_texture.id = MyEngine::ResourceManager::get_texture(tank_filepath).id;
 	m_turret_texture.id = MyEngine::ResourceManager::get_texture(turret_filepath).id;
+	m_hp_texture.id = MyEngine::ResourceManager::get_texture(hp_filepath).id;
+	m_ammo_texture.id = MyEngine::ResourceManager::get_texture(ammo_filepath).id;
 	m_frame_counter = 0;
 	m_reload_frame_counter = 0;
 }
@@ -252,7 +263,7 @@ bool Tank::update(MyEngine::InputManager input_manager, const std::vector<std::s
 			if ((curr_knot_pos.x + error > m_position.x + m_tank_size / 2 and curr_knot_pos.y + error > m_position.y + m_tank_size / 2) and (curr_knot_pos.x - error < m_position.x + m_tank_size / 2 and curr_knot_pos.y - error < m_position.y + m_tank_size / 2))
 			{
 				m_possible_directions.clear();
-				m_possible_directions.resize(0);
+				//m_possible_directions.resize(0);
 				int directions_number = 0;
 
 				if ((level_data.at(m_tank_pos.y + 1).at(m_tank_pos.x) != 'w') and (level_data.at(m_tank_pos.y + 1).at(m_tank_pos.x) != 'b'))
@@ -274,6 +285,7 @@ bool Tank::update(MyEngine::InputManager input_manager, const std::vector<std::s
 					m_possible_directions.push_back(RIGHT);
 					directions_number++;
 				}
+
 				if ((level_data.at(m_tank_pos.y).at(m_tank_pos.x - 1) != 'w') and (level_data.at(m_tank_pos.y ).at(m_tank_pos.x - 1) != 'b'))
 				{
 					m_possible_directions.push_back(LEFT);
@@ -342,6 +354,13 @@ void Tank::draw(MyEngine::SpriteBatch& sprite_batch)
 		sprite_batch.draw(dest_rect, uv_rect, m_texture.id, 0.5f, enemy_color, m_angle);
 		sprite_batch.draw(turret_dest_rect, uv_rect, m_turret_texture.id, 0.5f, enemy_color, m_turret_angle);
 	}
+
+
+	glm::vec4 hp_dest_rect(m_position.x - 18, m_position.y + m_tank_size + 25, 100 * ((float)m_hp/ (float)m_max_hp), 10);
+	glm::vec4 ammo_dest_rect(m_position.x - 18, m_position.y + m_tank_size + 10, 100 * ((float)m_ammo_current / (float)m_ammo_max), 10);
+
+	sprite_batch.draw(hp_dest_rect, uv_rect, m_hp_texture.id, 1.0f, player_color, 0.0f);
+	sprite_batch.draw(ammo_dest_rect, uv_rect, m_ammo_texture.id, 1.0f, player_color, 0.0f);
 }
 
 void Tank::check_tile_pos(const std::vector<std::string>& level_data, std::vector<glm::vec2>& collide_tile_pos,  float x, float y)
@@ -448,7 +467,7 @@ void Tank::apply_damage(int damage)
 
 void Tank::fire(glm::vec2 barrel_pos, glm::vec2 direction, std::vector<Projectile>& projectiles)
 {
-	projectiles.emplace_back(barrel_pos, 10,  direction, m_projectile_speed, m_damage);//
+	projectiles.emplace_back(barrel_pos, 10,  direction, m_projectile_speed, m_damage, !m_control);//
 	m_ammo_current--;
 }
 
@@ -537,6 +556,12 @@ void Tank::turret_rotate_1(MyEngine::InputManager& input_manager)
 
 	else if (mouse.x > pos.x and mouse.y > pos.y)
 		angle = 3.14 + glm::atan((mouse.x - pos.x) / (mouse.y - pos.y));
+
+	else if (mouse.y == pos.y and mouse.x < pos.x)
+		angle = 1.57;
+
+	else if (mouse.y == pos.y and mouse.x > pos.x)
+		angle = 5,71;
 
 	float sub_angle = glm::abs(m_turret_angle - angle);
 
@@ -630,6 +655,12 @@ void Tank::turret_rotate_2(MyEngine::InputManager& input_manager, Tank* player)
 
 	else if (player_pos.x > pos.x and player_pos.y > pos.y)
 		angle = 3.14 + glm::atan((player_pos.x - pos.x) / (player_pos.y - pos.y));
+
+	else if (player_pos.y == pos.y and player_pos.x < pos.x)
+		angle = 1.57;
+
+	else if (player_pos.y == pos.y and player_pos.x > pos.x)
+		angle = 5.71;
 
 	float sub_angle = glm::abs(m_turret_angle - angle);
 

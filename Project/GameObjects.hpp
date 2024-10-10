@@ -58,10 +58,14 @@ class Tank
 protected:
 	MyEngine::GLTexture m_texture;
 	MyEngine::GLTexture m_turret_texture;
+	MyEngine::GLTexture m_hp_texture;
+	MyEngine::GLTexture m_ammo_texture;
+
 
 	bool m_control; //Можно ли управлять этим танком
 
 	int m_hp;
+	int m_max_hp;
 	float m_speed;
 	int m_damage;
 	int m_fire_rate; // Через сколько кадров стреляем
@@ -121,7 +125,7 @@ public:
 	Tank();
 	~Tank();
 
-	void init(bool control, int hp, int damage, float speed, int ammo_max, int reload_time, float turret_speed, int fire_rate, float projectile_speed ,float accuracy,  glm::vec2 position, std::string tank_filepath, std::string turret_filepath);
+	void init(bool control, int hp, int damage, float speed, int ammo_max, int reload_time, float turret_speed, int fire_rate, float projectile_speed ,float accuracy,  glm::vec2 position, std::string tank_filepath, std::string turret_filepath, std::string hp_filepath, std::string ammo_filepath);
 
 	glm::vec2 get_position();
 
@@ -148,6 +152,7 @@ public:
 
 class Projectile 
 {
+	bool m_is_bot_sender;
 	float m_speed;
 	glm::vec2 m_direction;
 	glm::vec2 m_start_position;
@@ -159,7 +164,7 @@ class Projectile
 	int m_lifetime;
 
 public:
-	Projectile(glm::vec2 position, float projectile_size, glm::vec2 direction, float speed, int damage);
+	Projectile(glm::vec2 position, float projectile_size, glm::vec2 direction, float speed, int damage, bool bot_sender);
 	~Projectile();
 
 	void draw(MyEngine::SpriteBatch& sprite_batch);

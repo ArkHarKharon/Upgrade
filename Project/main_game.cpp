@@ -44,7 +44,7 @@ void Game::init_system()
 	SDL_Init(SDL_INIT_EVERYTHING);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
+	glDepthFunc(GL_LESS); //
 
 	m_window.create("Upgrade!", m_window_width, m_window_height, MyEngine::WindowFlag::FULLSCREEN);
 
@@ -80,7 +80,6 @@ void Game::process_input()
 			m_input_manager.release_key(event.button.button);
 			break;
 
-
 		case(SDL_KEYDOWN):
 			m_input_manager.press_key(event.key.keysym.sym);
 			break;
@@ -98,6 +97,9 @@ void Game::game_loop()
 	while (m_current_state != GameState::EXIT)
 	{
 		process_input();
+
+		if (m_input_manager.key_is_pressed(SDLK_HOME))
+			start_round();
 		
 		glm::vec2 pos = m_input_manager.get_mouse_coords();
 		if (!m_game_is_started)
@@ -193,9 +195,11 @@ void Game::draw_game()
 		 std::vector<glm::vec2> player2_start_pos;
 		 std::string tank_texture = "Data/Textures/tankBlue.png";
 		 std::string turret_texture = "Data/Textures/tankTurret.png";
+		 std::string hp_texture = "Data/Textures/hp.png";
+		 std::string ammo_texture = "Data/Textures/ammo.png";
 
 		 m_player1 = new Tank();
-		 m_player1->init(player1, hp * 1.5 , damage, speed * 1.5 , ammo_max, reload_time, turret_speed, fire_rate, projectile_speed, accuracy, player1_start_pos, tank_texture, turret_texture);
+		 m_player1->init(player1, hp * 3 , damage, speed * 1.5 , ammo_max * 2, reload_time, turret_speed, fire_rate, projectile_speed, accuracy, player1_start_pos, tank_texture, turret_texture, hp_texture, ammo_texture);
 		 m_tanks.push_back(m_player1);
 
 
@@ -219,7 +223,7 @@ void Game::draw_game()
 
 		 for (size_t i = 0; i < m_bots.size(); i++)
 		 {
-			 m_bots.at(i)->init(player2, hp, damage, speed, ammo_max, reload_time, turret_speed, fire_rate, projectile_speed, accuracy, player2_start_pos.at(i), tank_texture, turret_texture);
+			 m_bots.at(i)->init(player2, hp, damage, speed, ammo_max, reload_time, turret_speed, fire_rate, projectile_speed, accuracy, player2_start_pos.at(i), tank_texture, turret_texture, hp_texture, ammo_texture);
 			 m_tanks.push_back(m_bots.at(i));
 		 }
  }
