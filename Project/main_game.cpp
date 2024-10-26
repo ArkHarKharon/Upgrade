@@ -23,11 +23,6 @@ Game::~Game()
 void Game::run()
 {
 	init_system();
-	init_level();
-
-	MyEngine::Music music = m_audio_manager.load_music("Data/Sound/theme.mp3");
-	music.play();
-
 	game_loop();
 }
 
@@ -60,6 +55,14 @@ void Game::init_system()
 	m_fps_limiter.init(m_max_fps);
 
 	m_audio_manager.init();
+
+	init_level();
+
+	MyEngine::Music music = m_audio_manager.load_music("Data/Sound/theme.mp3");
+	music.play();
+
+	m_camera.set_position(glm::vec2(64 * 12.5f, 64 * 6.5f));
+	m_camera.set_scale(0.5f);
 }
 
 void Game::process_input()
@@ -134,9 +137,6 @@ void Game::game_loop()
 				
 		}
 
-		m_camera.set_position(glm::vec2(64 * 12.5f,64 * 6.5f));
-		m_camera.set_scale(0.5f);
-
 		m_camera.update();
 
 		for (int i = 0; i < m_projectiles.size();)
@@ -208,7 +208,7 @@ void Game::draw_game()
 		 float projectile_speed = 0.5f;
 		 float accuracy = 0.01f;
 		 glm::vec2 player1_start_pos = m_levels.at(0)->get_start_pos();
-		 std::vector<glm::vec2> player2_start_pos;
+		 std::vector<glm::vec2> enemy_start_pos;
 		 std::string tank_texture = "Data/Textures/tankBlue.png";
 		 std::string turret_texture = "Data/Textures/tankTurret.png";
 		 std::string hp_texture = "Data/Textures/hp.png";
@@ -218,18 +218,18 @@ void Game::draw_game()
 		 MyEngine::SoundEffect death_bot = m_audio_manager.load_sound_effect("Data/Sound/death_bot.mp3");
 
 
-		 m_player1 = new Tank();
+		 m_player1 = new PlayerTank();
 		 m_player1->init(player1, hp  * 0.5, damage, speed * 1.5 , ammo_max * 2, reload_time,
 			 turret_speed, fire_rate, projectile_speed, accuracy, player1_start_pos,
 			 tank_texture, turret_texture, hp_texture, ammo_texture, fire_effect, death_bot);
 		 m_tanks.push_back(m_player1);
 
 
-		Tank* bot1 = new Tank();
-		Tank* bot2 = new Tank();
-		Tank* bot3 = new Tank();
-		Tank* bot4 = new Tank();
-		Tank* bot5 = new Tank();
+		BotTank* bot1 = new BotTank();
+		BotTank* bot2 = new BotTank();
+		BotTank* bot3 = new BotTank();
+		BotTank* bot4 = new BotTank();
+		BotTank* bot5 = new BotTank();
 
 		m_bots.push_back(bot1);
 		m_bots.push_back(bot2);
@@ -237,17 +237,17 @@ void Game::draw_game()
 		m_bots.push_back(bot4);
 		m_bots.push_back(bot5);
 
-		 player2_start_pos.resize(m_bots.size());
+		 enemy_start_pos.resize(m_bots.size());
 		 for (size_t i = 0; i < m_bots.size(); i++)
 		 {
-			 player2_start_pos.at(i) = m_levels.at(0)->get_enemy_pos();
+			 enemy_start_pos.at(i) = m_levels.at(0)->get_enemy_pos();
 		 }
 
 		 for (size_t i = 0; i < m_bots.size(); i++)
 		 {
 			 m_bots.at(i)->init(player2, hp, damage, speed, ammo_max, reload_time,
 				 turret_speed, fire_rate, projectile_speed, accuracy,
-				 player2_start_pos.at(i), tank_texture, turret_texture, hp_texture,
+				 enemy_start_pos.at(i), tank_texture, turret_texture, hp_texture,
 				 ammo_texture, fire_effect, death_player);
 			 m_tanks.push_back(m_bots.at(i));
 		 }

@@ -35,53 +35,70 @@ enum class GameState
 
 class Game
 {
-	MyEngine::Window m_window;
-	float m_window_width;
-	float m_window_height;
+	// Управляющие переменные
+	GameState m_current_state;		// Текущее сотояние игры из enum class GameState
+	bool m_game_is_started;			// Началась ли игра
+	float m_time;					// Кол-во кадров с начала игры
 
-	MyEngine::FPS_Limiter m_fps_limiter;
-	int m_fps;
-	int m_max_fps;
 
-	MyEngine::Camera2D m_camera;
-	float m_cam_speed;
-	float m_cam_scale;
 
-	GameState m_current_state;
+	// Объекты модулей приложения и связанные переменные
+	MyEngine::Window m_window;		// Модуль окна игры
+		float m_window_width;			// Ширина окна
+		float m_window_height;			// Высота окна
 
-	MyEngine::GLSLProgram m_color_program;
-	
-	MyEngine::SpriteBatch m_tank_sprite_batch;
+	MyEngine::FPS_Limiter m_fps_limiter;	// Ограничитель FPS
+		int m_fps;								// Текущее значение FPS
+		int m_max_fps;							// Максимальное значение FPS
 
-	MyEngine::InputManager m_input_manager;
+	MyEngine::Camera2D m_camera;	// Модуль камеры
+		float m_cam_speed;				// Скорость камеры
+		float m_cam_scale;				// Увеличение камеры
 
-	std::vector<Projectile> m_projectiles;
+	MyEngine::GLSLProgram m_color_program;			// Модуль шейдеров
+	MyEngine::SpriteBatch m_tank_sprite_batch;		// Модуль отрисовки танков
+	MyEngine::InputManager m_input_manager;			// Менеджер ввода
+	MyEngine::AudioManager m_audio_manager;			// Менеджер аудио
 
-	std::vector <Level*> m_levels;
 
-	Tank* m_player1;
 
-	std::vector<Tank*> m_bots;
+	// Игровые объекты
+	std::vector<Projectile> m_projectiles;		// Вектор снарядов
+	std::vector <Level*> m_levels;				// Вектор карт уровней игры
+	Tank* m_player1;							// Танк игрока
+	std::vector<Tank*> m_bots;					// Вектор танков ботов
+	std::vector<Tank*> m_tanks;					// Вектор всех танков игры
 
-	std::vector<Tank*> m_tanks;
 
-	MyEngine::AudioManager m_audio_manager;
 
-	float m_time;
+	// Функции инициализации модулей приложения
+	void init_system();			// Функция инициализации всех систем
+	void init_shaders();		// Функция инициализации шейдеров
+	void process_input();		// Функция обработки ввода
+	void init_level();			// Функция инициализации уровня
 
-	bool m_game_is_started;
 
-	void init_shaders();
-	void init_system(); 
-	void process_input();
-	void game_loop();
-	void draw_game();
 
-	void init_level();
-	void start_round();
+	// Функция начала игрового раунда
+	void start_round();		// Функция начала нового раунда
+
+
+
+	// Функция игровой петли
+	void game_loop();		
+
+
+
+	// Функция отрисовки игры
+	void draw_game();		
+
 public:
+	// Конструкторы и деструкторы
 	Game();
 	~Game();
 
+
+
+	// Точка входа в приложение
 	void run();
 };
