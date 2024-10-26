@@ -3,7 +3,7 @@
 const int TILE_SIZE = 64;
 
 
-Projectile::Projectile(glm::vec2 position, float projectile_size ,glm::vec2 direction, float speed, int damage, bool bot_sender) : m_lifetime{0}
+Projectile::Projectile(glm::vec2 position, float projectile_size ,glm::vec2 direction, float speed, int damage, bool bot_sender, bool test) : m_lifetime{0}
 {
 	m_position = position;
 	m_start_position = m_position;
@@ -12,6 +12,7 @@ Projectile::Projectile(glm::vec2 position, float projectile_size ,glm::vec2 dire
 	m_damage = damage;
 	m_projectile_size = projectile_size;
 	m_is_bot_sender = bot_sender;
+	m_is_test_projectile = test;
 }
 
 Projectile::~Projectile()
@@ -60,7 +61,7 @@ bool Projectile::collide_with_tanks(std::vector<Tank*> tanks)
 
 		if (dist_x < min_distance and dist_y < min_distance)
 		{
-			if (!tanks.at(i)->is_controlable() and m_is_bot_sender)
+			if (!tanks.at(i)->is_controlable() and m_is_bot_sender or m_is_test_projectile)
 				return true;
 			else
 			{
@@ -216,7 +217,11 @@ bool Tank::is_controlable()
 	return m_control;
 }
 
-void Tank::init(bool control, int hp, int damage, float speed, int ammo_max, int reload_time, float turret_speed, int fire_rate,float projectile_speed, float accuracy ,glm::vec2 start_position,std::string tank_filepath, std::string turret_filepath, std::string hp_filepath, std::string ammo_filepath)
+void Tank::init(bool control, int hp, int damage, float speed, int ammo_max,
+	int reload_time, float turret_speed, int fire_rate,float projectile_speed,
+	float accuracy ,glm::vec2 start_position,std::string tank_filepath,
+	std::string turret_filepath, std::string hp_filepath, std::string ammo_filepath,
+	MyEngine::SoundEffect fire_effect, MyEngine::SoundEffect death_effect)
 {
 	m_control = control;
 	m_hp = hp;
@@ -237,6 +242,8 @@ void Tank::init(bool control, int hp, int damage, float speed, int ammo_max, int
 	m_ammo_texture.id = MyEngine::ResourceManager::get_texture(ammo_filepath).id;
 	m_frame_counter = 0;
 	m_reload_frame_counter = 0;
+	m_shoot_effect = fire_effect;
+	m_death_effect = death_effect;
 }
 
 bool Tank::update(MyEngine::InputManager input_manager, const std::vector<std::string>& level_data, std::vector <Tank*> tanks, std::vector<Projectile>& projectiles)
@@ -314,7 +321,7 @@ bool Tank::update(MyEngine::InputManager input_manager, const std::vector<std::s
 
 				move_2(input_manager, level_data);
 				turret_rotate_2(input_manager, tanks.at(0));
-				shoot_2(projectiles, input_manager);
+				shoot_2(projectiles, input_manager, tanks);
 				return false;
 			}
 		
@@ -322,13 +329,17 @@ bool Tank::update(MyEngine::InputManager input_manager, const std::vector<std::s
 		
 		move_2(input_manager, level_data);
 		turret_rotate_2(input_manager, tanks.at(0));
-		shoot_2(projectiles, input_manager);
+		shoot_2(projectiles, input_manager, tanks);
 	}
 
 	collide_with_level(level_data);
 
 	if (m_hp <= 0)
+	{
+		m_death_effect.play();
 		return true;
+
+	}
 
 	return false;
 }
@@ -467,6 +478,7 @@ void Tank::apply_damage(int damage)
 
 void Tank::fire(glm::vec2 barrel_pos, glm::vec2 direction, std::vector<Projectile>& projectiles)
 {
+	m_shoot_effect.play();
 	projectiles.emplace_back(barrel_pos, 10,  direction, m_projectile_speed, m_damage, !m_control);//
 	m_ammo_current--;
 }
@@ -685,7 +697,7 @@ void Tank::turret_rotate_2(MyEngine::InputManager& input_manager, Tank* player)
 	}
 }
 
-void Tank::shoot_2(std::vector<Projectile>& bullets, MyEngine::InputManager& input_manager)
+void Tank::shoot_2(std::vector<Projectile>& bullets, MyEngine::InputManager& input_manager, std::vector <Tank*> tanks)
 {
 	glm::vec2 def_pos = glm::vec2(m_position.x + m_tank_size / 2 - 5, m_position.y + m_tank_size / 2 - 5);
 	static std::mt19937 random_engine(time(0));
@@ -694,10 +706,20 @@ void Tank::shoot_2(std::vector<Projectile>& bullets, MyEngine::InputManager& inp
 	glm::vec2 top(0.0f, 1.0f);//
 	glm::vec2 direction = glm::rotate(top, m_turret_angle + accuracy_angle(random_engine));//
 
-	if (!reload(input_manager) and m_frame_counter >= m_fire_rate )
+	if (!reload(input_manager) and m_frame_counter >= m_fire_rate ) //and test_shot(bullets, input_manager, def_pos, direction, tanks)
 	{
-		fire(def_pos, direction, bullets);
+		test_shot(bullets, input_manager, def_pos, direction, tanks); //fire(def_pos, direction, bullets);
 		m_frame_counter = 0;
 	}
+}
+
+bool Tank::test_shot(std::vector<Projectile>& projectiles, MyEngine::InputManager& input_manager, glm::vec2 barrel_pos, glm::vec2 direction, std::vector <Tank*> tanks)
+{
+	projectiles.emplace_back(barrel_pos, 10.0f, direction, 0.001f, 0, !m_control);//
+	if (projectiles.back().collide_with_tanks(tanks))
+		return true;
+
+	else return false;
+
 }
 

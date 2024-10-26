@@ -14,6 +14,7 @@
 #include <MyEngine/ResourceManager.hpp>
 #include <MyEngine/InputManager.hpp>
 #include <MyEngine/Timing.hpp>
+#include <MyEngine/AudioManager.hpp>
 
 #include "GameObjects.hpp"
 
@@ -59,11 +60,12 @@ class Game
 	std::vector <Level*> m_levels;
 
 	Tank* m_player1;
-	Tank* m_player2;
 
 	std::vector<Tank*> m_bots;
 
 	std::vector<Tank*> m_tanks;
+
+	MyEngine::AudioManager m_audio_manager;
 
 	float m_time;
 

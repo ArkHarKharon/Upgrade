@@ -24,6 +24,10 @@ void Game::run()
 {
 	init_system();
 	init_level();
+
+	MyEngine::Music music = m_audio_manager.load_music("Data/Sound/theme.mp3");
+	music.play();
+
 	game_loop();
 }
 
@@ -46,6 +50,7 @@ void Game::init_system()
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS); //
 
+
 	m_window.create("Upgrade!", m_window_width, m_window_height, MyEngine::WindowFlag::FULLSCREEN);
 
 	init_shaders();
@@ -54,6 +59,7 @@ void Game::init_system()
 
 	m_fps_limiter.init(m_max_fps);
 
+	m_audio_manager.init();
 }
 
 void Game::process_input()
@@ -99,7 +105,17 @@ void Game::game_loop()
 		process_input();
 
 		if (m_input_manager.key_is_pressed(SDLK_HOME))
+		{
+
+			for (size_t i = 0; i < m_tanks.size(); i++)
+			{
+				delete m_tanks.at(i);
+			}
+			m_tanks.resize(0);
+			m_bots.resize(0);
+
 			start_round();
+		}
 		
 		glm::vec2 pos = m_input_manager.get_mouse_coords();
 		if (!m_game_is_started)
@@ -182,7 +198,7 @@ void Game::draw_game()
 
 		 bool player1 = true;
 		 bool player2 = false;
-		 int hp = 1000;
+		 int hp = 2000;
 		 int damage = 50;
 		 float speed = 0.1f;
 		 int ammo_max = 50;
@@ -197,23 +213,29 @@ void Game::draw_game()
 		 std::string turret_texture = "Data/Textures/tankTurret.png";
 		 std::string hp_texture = "Data/Textures/hp.png";
 		 std::string ammo_texture = "Data/Textures/ammo.png";
+		 MyEngine::SoundEffect fire_effect = m_audio_manager.load_sound_effect("Data/Sound/shot.mp3");
+		 MyEngine::SoundEffect death_player = m_audio_manager.load_sound_effect("Data/Sound/death_player.mp3");
+		 MyEngine::SoundEffect death_bot = m_audio_manager.load_sound_effect("Data/Sound/death_bot.mp3");
+
 
 		 m_player1 = new Tank();
-		 m_player1->init(player1, hp * 3 , damage, speed * 1.5 , ammo_max * 2, reload_time, turret_speed, fire_rate, projectile_speed, accuracy, player1_start_pos, tank_texture, turret_texture, hp_texture, ammo_texture);
+		 m_player1->init(player1, hp  * 0.5, damage, speed * 1.5 , ammo_max * 2, reload_time,
+			 turret_speed, fire_rate, projectile_speed, accuracy, player1_start_pos,
+			 tank_texture, turret_texture, hp_texture, ammo_texture, fire_effect, death_bot);
 		 m_tanks.push_back(m_player1);
 
 
-		 Tank* bot1 = new Tank();
-		 Tank* bot2 = new Tank();
-		 Tank* bot3 = new Tank();
-		 Tank* bot4 = new Tank();
-		 Tank* bot5 = new Tank();
+		Tank* bot1 = new Tank();
+		Tank* bot2 = new Tank();
+		Tank* bot3 = new Tank();
+		Tank* bot4 = new Tank();
+		Tank* bot5 = new Tank();
 
-		 m_bots.push_back(bot1);
-		 m_bots.push_back(bot2);
-		 m_bots.push_back(bot3);
-		 m_bots.push_back(bot4);
-		 m_bots.push_back(bot5);
+		m_bots.push_back(bot1);
+		m_bots.push_back(bot2);
+		m_bots.push_back(bot3);
+		m_bots.push_back(bot4);
+		m_bots.push_back(bot5);
 
 		 player2_start_pos.resize(m_bots.size());
 		 for (size_t i = 0; i < m_bots.size(); i++)
@@ -223,7 +245,12 @@ void Game::draw_game()
 
 		 for (size_t i = 0; i < m_bots.size(); i++)
 		 {
-			 m_bots.at(i)->init(player2, hp, damage, speed, ammo_max, reload_time, turret_speed, fire_rate, projectile_speed, accuracy, player2_start_pos.at(i), tank_texture, turret_texture, hp_texture, ammo_texture);
+			 m_bots.at(i)->init(player2, hp, damage, speed, ammo_max, reload_time,
+				 turret_speed, fire_rate, projectile_speed, accuracy,
+				 player2_start_pos.at(i), tank_texture, turret_texture, hp_texture,
+				 ammo_texture, fire_effect, death_player);
 			 m_tanks.push_back(m_bots.at(i));
 		 }
+
+		 m_game_is_started = true;
  }

@@ -11,6 +11,7 @@
 #include <MyEngine/GLTexture.hpp>
 #include <MyEngine/InputManager.hpp>
 #include <MyEngine/Camera2D.hpp>
+#include <MyEngine/AudioManager.hpp>
 
 #include <iostream>
 #include <fstream>
@@ -61,6 +62,8 @@ protected:
 	MyEngine::GLTexture m_hp_texture;
 	MyEngine::GLTexture m_ammo_texture;
 
+	MyEngine::SoundEffect m_shoot_effect;
+	MyEngine::SoundEffect m_death_effect;
 
 	bool m_control; //Можно ли управлять этим танком
 
@@ -102,7 +105,10 @@ protected:
 
 	void move_2(MyEngine::InputManager& input_manager, const std::vector<std::string>& level_data);
 	void turret_rotate_2(MyEngine::InputManager& input_manager, Tank* player);
-	void shoot_2(std::vector<Projectile>& bullets, MyEngine::InputManager& input_manager);
+	void shoot_2(std::vector<Projectile>& bullets, MyEngine::InputManager& input_manager, std::vector <Tank*> tanks);
+
+	bool test_shot(std::vector<Projectile>& projectiles, MyEngine::InputManager& input_manager, glm::vec2 barrel_pos, glm::vec2 direction, std::vector <Tank*> tanks);
+
 
 
 	const struct Direction
@@ -125,7 +131,11 @@ public:
 	Tank();
 	~Tank();
 
-	void init(bool control, int hp, int damage, float speed, int ammo_max, int reload_time, float turret_speed, int fire_rate, float projectile_speed ,float accuracy,  glm::vec2 position, std::string tank_filepath, std::string turret_filepath, std::string hp_filepath, std::string ammo_filepath);
+	void init(bool control, int hp, int damage, float speed, int ammo_max,
+		int reload_time, float turret_speed, int fire_rate, float projectile_speed ,
+		float accuracy,  glm::vec2 position, std::string tank_filepath,
+		std::string turret_filepath, std::string hp_filepath, std::string ammo_filepath,
+		MyEngine::SoundEffect fire_effect, MyEngine::SoundEffect death_effect);
 
 	glm::vec2 get_position();
 
@@ -153,6 +163,8 @@ public:
 class Projectile 
 {
 	bool m_is_bot_sender;
+	bool m_is_test_projectile;
+
 	float m_speed;
 	glm::vec2 m_direction;
 	glm::vec2 m_start_position;
@@ -164,7 +176,7 @@ class Projectile
 	int m_lifetime;
 
 public:
-	Projectile(glm::vec2 position, float projectile_size, glm::vec2 direction, float speed, int damage, bool bot_sender);
+	Projectile(glm::vec2 position, float projectile_size, glm::vec2 direction, float speed, int damage, bool bot_sender, bool test = false);
 	~Projectile();
 
 	void draw(MyEngine::SpriteBatch& sprite_batch);

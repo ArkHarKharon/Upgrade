@@ -167,6 +167,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AudioManager.hpp" />
     <ClInclude Include="Camera2D.hpp" />
     <ClInclude Include="Errors.hpp" />
     <ClInclude Include="GLSL.hpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="Window.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="Camera2D.cpp" />
     <ClCompile Include="Errors.cpp" />
     <ClCompile Include="GLSL.cpp" />
