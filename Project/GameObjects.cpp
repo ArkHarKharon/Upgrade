@@ -202,7 +202,7 @@ std::vector<std::string>& Level::get_level_data()
 
 
 
-Tank::Tank() : m_tank_size{ 64 }, m_angle{ 0 }, m_turret_angle{ 0.0f }, m_possible_directions{}
+Tank::Tank() : m_tank_size{ 64 }, m_angle{ 0 }, m_turret_angle{ 0.0f }
 {
 
 }
@@ -244,104 +244,6 @@ void Tank::init(bool control, int hp, int damage, float speed, int ammo_max,
 	m_reload_frame_counter = 0;
 	m_shoot_effect = fire_effect;
 	m_death_effect = death_effect;
-}
-
-bool Tank::update(MyEngine::InputManager input_manager, const std::vector<std::string>& level_data, std::vector <Tank*> tanks, std::vector<Projectile>& projectiles)
-{
-	m_frame_counter++;
-
-	if (is_controlable())
-	{
-		move_1(input_manager);
-		turret_rotate_1(input_manager);
-		shoot_1(projectiles, input_manager);
-		
-	}
-
-	else if(!is_controlable())
-	{
-		m_tank_pos = glm::ivec2((m_position.x) / m_tank_size, (m_position.y)/ m_tank_size);
-
-		float error = 0.05;
-
-		if ((level_data.at(m_tank_pos.y).at(m_tank_pos.x) == 'e' or level_data.at(m_tank_pos.y).at(m_tank_pos.x) == 's'))
-		{
-			glm::vec2 curr_knot_pos = glm::vec2(m_tank_pos.x * m_tank_size + m_tank_size / 2, m_tank_pos.y * m_tank_size + m_tank_size / 2);
-			if ((curr_knot_pos.x + error > m_position.x + m_tank_size / 2 and curr_knot_pos.y + error > m_position.y + m_tank_size / 2) and (curr_knot_pos.x - error < m_position.x + m_tank_size / 2 and curr_knot_pos.y - error < m_position.y + m_tank_size / 2))
-			{
-				m_possible_directions.clear();
-				//m_possible_directions.resize(0);
-				int directions_number = 0;
-
-				if ((level_data.at(m_tank_pos.y + 1).at(m_tank_pos.x) != 'w') and (level_data.at(m_tank_pos.y + 1).at(m_tank_pos.x) != 'b'))
-				{
-					m_possible_directions.push_back(UP);
-					directions_number++;
-				}
-					
-
-				if ((level_data.at(m_tank_pos.y - 1).at(m_tank_pos.x) != 'w') and (level_data.at(m_tank_pos.y - 1).at(m_tank_pos.x) != 'b'))
-				{
-					m_possible_directions.push_back(DOWN);
-					directions_number++;
-				}
-					
-
-				if ((level_data.at(m_tank_pos.y).at(m_tank_pos.x + 1) != 'w') and (level_data.at(m_tank_pos.y).at(m_tank_pos.x + 1) != 'b'))
-				{
-					m_possible_directions.push_back(RIGHT);
-					directions_number++;
-				}
-
-				if ((level_data.at(m_tank_pos.y).at(m_tank_pos.x - 1) != 'w') and (level_data.at(m_tank_pos.y ).at(m_tank_pos.x - 1) != 'b'))
-				{
-					m_possible_directions.push_back(LEFT);
-					directions_number++;
-				}
-
-				static std::mt19937 random_engine(time(0));
-				std::uniform_real_distribution<float> pos_number(0, directions_number );
-
-				m_current_direction = m_possible_directions.at(pos_number(random_engine));
-
-				switch (m_current_direction)
-				{
-				case(UP):
-					m_position.y += m_speed;
-					break;
-				case(DOWN):
-					m_position.y -= m_speed;
-					break;
-				case(RIGHT):
-					m_position.x += m_speed;
-					break;
-				case(LEFT):
-					m_position.x -= m_speed;
-				}
-
-				move_2(input_manager, level_data);
-				turret_rotate_2(input_manager, tanks.at(0));
-				shoot_2(projectiles, input_manager, tanks);
-				return false;
-			}
-		
-		}
-		
-		move_2(input_manager, level_data);
-		turret_rotate_2(input_manager, tanks.at(0));
-		shoot_2(projectiles, input_manager, tanks);
-	}
-
-	collide_with_level(level_data);
-
-	if (m_hp <= 0)
-	{
-		m_death_effect.play();
-		return true;
-
-	}
-
-	return false;
 }
 
 void Tank::draw(MyEngine::SpriteBatch& sprite_batch)
@@ -515,7 +417,14 @@ bool Tank::reload(MyEngine::InputManager& input_manager)
 	else return false;
 }
 
-void Tank::move_1(MyEngine::InputManager& input_manager)
+
+
+
+
+
+
+
+void PlayerTank::move(MyEngine::InputManager& input_manager, const std::vector<std::string>& level_data)
 {
 	if (input_manager.key_is_pressed(SDLK_w))
 	{
@@ -542,7 +451,7 @@ void Tank::move_1(MyEngine::InputManager& input_manager)
 	}
 }
 
-void Tank::turret_rotate_1(MyEngine::InputManager& input_manager)
+void PlayerTank::turret_rotate(MyEngine::InputManager& input_manager, Tank* player)
 {
 	if (m_turret_angle < 0)
 		m_turret_angle = 6.283 + m_turret_angle;
@@ -573,7 +482,7 @@ void Tank::turret_rotate_1(MyEngine::InputManager& input_manager)
 		angle = 1.57;
 
 	else if (mouse.y == pos.y and mouse.x > pos.x)
-		angle = 5,71;
+		angle = 5, 71;
 
 	float sub_angle = glm::abs(m_turret_angle - angle);
 
@@ -598,7 +507,7 @@ void Tank::turret_rotate_1(MyEngine::InputManager& input_manager)
 	}
 }
 
-void Tank::shoot_1(std::vector<Projectile>& bullets, MyEngine::InputManager& input_manager)
+void PlayerTank::shoot(std::vector<Projectile>& bullets, MyEngine::InputManager& input_manager, std::vector <Tank*> tanks)
 {
 	glm::vec2 def_pos = glm::vec2(m_position.x + m_tank_size / 2 - 5, m_position.y + m_tank_size / 2 - 5);
 	static std::mt19937 random_engine(time(0));
@@ -614,12 +523,40 @@ void Tank::shoot_1(std::vector<Projectile>& bullets, MyEngine::InputManager& inp
 	}
 }
 
-void Tank::move_2(MyEngine::InputManager& input_manager, const std::vector<std::string>& level_data)
+bool PlayerTank::update(MyEngine::InputManager input_manager, const std::vector<std::string>& level_data, std::vector <Tank*> tanks, std::vector<Projectile>& projectiles)
+{
+	m_frame_counter++;
+
+	move(input_manager, level_data);
+	turret_rotate(input_manager, nullptr);
+	shoot(projectiles, input_manager, tanks);
+
+	collide_with_level(level_data);
+
+	if (m_hp <= 0)
+	{
+		m_death_effect.play();
+		return true;
+
+	}
+
+	return false;
+
+}
+
+
+
+
+
+
+
+
+void BotTank::move(MyEngine::InputManager& input_manager, const std::vector<std::string>& level_data)
 {
 	switch (m_current_direction)
 	{
 	case(UP):
-		if(rotate(m_direction.up) == true)
+		if (rotate(m_direction.up) == true)
 			m_position.y += m_speed;
 		break;
 	case(DOWN):
@@ -637,11 +574,11 @@ void Tank::move_2(MyEngine::InputManager& input_manager, const std::vector<std::
 	default:
 		//std::cout << "Втыкаю!" << std::endl;
 		break;
-	} 
+	}
 
 }
 
-void Tank::turret_rotate_2(MyEngine::InputManager& input_manager, Tank* player)
+void BotTank::turret_rotate(MyEngine::InputManager& input_manager, Tank* player)
 {
 	if (m_turret_angle < 0)
 		m_turret_angle = 6.283 + m_turret_angle;
@@ -668,11 +605,11 @@ void Tank::turret_rotate_2(MyEngine::InputManager& input_manager, Tank* player)
 	else if (player_pos.x > pos.x and player_pos.y > pos.y)
 		angle = 3.14 + glm::atan((player_pos.x - pos.x) / (player_pos.y - pos.y));
 
-	else if (player_pos.y == pos.y and player_pos.x < pos.x)
+	else if (player_pos.y == pos.y and player_pos.x > pos.x)
 		angle = 1.57;
 
-	else if (player_pos.y == pos.y and player_pos.x > pos.x)
-		angle = 5.71;
+	else if (player_pos.y == pos.y and player_pos.x < pos.x)
+		angle = 4.71;
 
 	float sub_angle = glm::abs(m_turret_angle - angle);
 
@@ -697,7 +634,7 @@ void Tank::turret_rotate_2(MyEngine::InputManager& input_manager, Tank* player)
 	}
 }
 
-void Tank::shoot_2(std::vector<Projectile>& bullets, MyEngine::InputManager& input_manager, std::vector <Tank*> tanks)
+void BotTank::shoot(std::vector<Projectile>& bullets, MyEngine::InputManager& input_manager, std::vector <Tank*> tanks)
 {
 	glm::vec2 def_pos = glm::vec2(m_position.x + m_tank_size / 2 - 5, m_position.y + m_tank_size / 2 - 5);
 	static std::mt19937 random_engine(time(0));
@@ -706,20 +643,97 @@ void Tank::shoot_2(std::vector<Projectile>& bullets, MyEngine::InputManager& inp
 	glm::vec2 top(0.0f, 1.0f);//
 	glm::vec2 direction = glm::rotate(top, m_turret_angle + accuracy_angle(random_engine));//
 
-	if (!reload(input_manager) and m_frame_counter >= m_fire_rate ) //and test_shot(bullets, input_manager, def_pos, direction, tanks)
+	if (!reload(input_manager) and m_frame_counter >= m_fire_rate) //and test_shot(bullets, input_manager, def_pos, direction, tanks)
 	{
-		test_shot(bullets, input_manager, def_pos, direction, tanks); //fire(def_pos, direction, bullets);
+		fire(def_pos, direction, bullets); //;
 		m_frame_counter = 0;
 	}
 }
 
-bool Tank::test_shot(std::vector<Projectile>& projectiles, MyEngine::InputManager& input_manager, glm::vec2 barrel_pos, glm::vec2 direction, std::vector <Tank*> tanks)
+bool BotTank::update(MyEngine::InputManager input_manager, const std::vector<std::string>& level_data, std::vector <Tank*> tanks, std::vector<Projectile>& projectiles)
 {
-	projectiles.emplace_back(barrel_pos, 10.0f, direction, 0.001f, 0, !m_control);//
-	if (projectiles.back().collide_with_tanks(tanks))
+	m_frame_counter++;
+
+	m_tank_pos = glm::ivec2((m_position.x) / m_tank_size, (m_position.y) / m_tank_size);
+
+	float error = 0.05;
+
+	if ((level_data.at(m_tank_pos.y).at(m_tank_pos.x) == 'e' or level_data.at(m_tank_pos.y).at(m_tank_pos.x) == 's'))
+	{
+		glm::vec2 curr_knot_pos = glm::vec2(m_tank_pos.x * m_tank_size + m_tank_size / 2, m_tank_pos.y * m_tank_size + m_tank_size / 2);
+		if ((curr_knot_pos.x + error > m_position.x + m_tank_size / 2 and curr_knot_pos.y + error > m_position.y + m_tank_size / 2) and (curr_knot_pos.x - error < m_position.x + m_tank_size / 2 and curr_knot_pos.y - error < m_position.y + m_tank_size / 2))
+		{
+			m_possible_directions.clear();
+			//m_possible_directions.resize(0);
+			int directions_number = 0;
+
+			if ((level_data.at(m_tank_pos.y + 1).at(m_tank_pos.x) != 'w') and (level_data.at(m_tank_pos.y + 1).at(m_tank_pos.x) != 'b'))
+			{
+				m_possible_directions.push_back(UP);
+				directions_number++;
+			}
+
+
+			if ((level_data.at(m_tank_pos.y - 1).at(m_tank_pos.x) != 'w') and (level_data.at(m_tank_pos.y - 1).at(m_tank_pos.x) != 'b'))
+			{
+				m_possible_directions.push_back(DOWN);
+				directions_number++;
+			}
+
+
+			if ((level_data.at(m_tank_pos.y).at(m_tank_pos.x + 1) != 'w') and (level_data.at(m_tank_pos.y).at(m_tank_pos.x + 1) != 'b'))
+			{
+				m_possible_directions.push_back(RIGHT);
+				directions_number++;
+			}
+
+			if ((level_data.at(m_tank_pos.y).at(m_tank_pos.x - 1) != 'w') and (level_data.at(m_tank_pos.y).at(m_tank_pos.x - 1) != 'b'))
+			{
+				m_possible_directions.push_back(LEFT);
+				directions_number++;
+			}
+
+			static std::mt19937 random_engine(time(0));
+			std::uniform_real_distribution<float> pos_number(0, directions_number);
+
+			m_current_direction = m_possible_directions.at(pos_number(random_engine));
+
+			switch (m_current_direction)
+			{
+			case(UP):
+				m_position.y += m_speed;
+				break;
+			case(DOWN):
+				m_position.y -= m_speed;
+				break;
+			case(RIGHT):
+				m_position.x += m_speed;
+				break;
+			case(LEFT):
+				m_position.x -= m_speed;
+			}
+
+			move(input_manager, level_data);
+			turret_rotate(input_manager, tanks.at(0));
+			shoot(projectiles, input_manager, tanks);
+			return false;
+		}
+
+
+	}
+
+	move(input_manager, level_data);
+	turret_rotate(input_manager, tanks.at(0));
+	shoot(projectiles, input_manager, tanks);
+
+	collide_with_level(level_data);
+
+	if (m_hp <= 0)
+	{
+		m_death_effect.play();
 		return true;
 
-	else return false;
+	}
 
+	return false;
 }
-
