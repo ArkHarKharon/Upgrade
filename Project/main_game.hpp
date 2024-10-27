@@ -35,6 +35,7 @@ enum class GameState
 
 class Game
 {
+protected:
 	// Управляющие переменные
 	GameState m_current_state;		// Текущее сотояние игры из enum class GameState
 	bool m_game_is_started;			// Началась ли игра
@@ -65,8 +66,8 @@ class Game
 	// Игровые объекты
 	std::vector<Projectile> m_projectiles;		// Вектор снарядов
 	std::vector <Level*> m_levels;				// Вектор карт уровней игры
-	Tank* m_player1;							// Танк игрока
-	std::vector<Tank*> m_bots;					// Вектор танков ботов
+	PlayerTank* m_player1;							// Танк игрока
+	std::vector<BotTank*> m_bots;					// Вектор танков ботов
 	std::vector<Tank*> m_tanks;					// Вектор всех танков игры
 
 

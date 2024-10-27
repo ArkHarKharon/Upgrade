@@ -417,15 +417,6 @@ bool Tank::reload(MyEngine::InputManager& input_manager)
 	else return false;
 }
 
-bool Tank::test_shot(std::vector<Projectile>& projectiles, MyEngine::InputManager& input_manager, glm::vec2 barrel_pos, glm::vec2 direction, std::vector <Tank*> tanks)
-{
-	projectiles.emplace_back(barrel_pos, 10.0f, direction, 0.001f, 0, !Tank::m_control);//
-	if (projectiles.back().collide_with_tanks(tanks))
-		return true;
-
-	else return false;
-
-}
 
 
 
@@ -534,6 +525,8 @@ void PlayerTank::shoot(std::vector<Projectile>& bullets, MyEngine::InputManager&
 
 bool PlayerTank::update(MyEngine::InputManager input_manager, const std::vector<std::string>& level_data, std::vector <Tank*> tanks, std::vector<Projectile>& projectiles)
 {
+	m_frame_counter++;
+
 	move(input_manager, level_data);
 	turret_rotate(input_manager, nullptr);
 	shoot(projectiles, input_manager, tanks);
@@ -612,11 +605,11 @@ void BotTank::turret_rotate(MyEngine::InputManager& input_manager, Tank* player)
 	else if (player_pos.x > pos.x and player_pos.y > pos.y)
 		angle = 3.14 + glm::atan((player_pos.x - pos.x) / (player_pos.y - pos.y));
 
-	else if (player_pos.y == pos.y and player_pos.x < pos.x)
+	else if (player_pos.y == pos.y and player_pos.x > pos.x)
 		angle = 1.57;
 
-	else if (player_pos.y == pos.y and player_pos.x > pos.x)
-		angle = 5.71;
+	else if (player_pos.y == pos.y and player_pos.x < pos.x)
+		angle = 4.71;
 
 	float sub_angle = glm::abs(m_turret_angle - angle);
 
@@ -652,13 +645,15 @@ void BotTank::shoot(std::vector<Projectile>& bullets, MyEngine::InputManager& in
 
 	if (!reload(input_manager) and m_frame_counter >= m_fire_rate) //and test_shot(bullets, input_manager, def_pos, direction, tanks)
 	{
-		test_shot(bullets, input_manager, def_pos, direction, tanks); //fire(def_pos, direction, bullets);
+		fire(def_pos, direction, bullets); //;
 		m_frame_counter = 0;
 	}
 }
 
 bool BotTank::update(MyEngine::InputManager input_manager, const std::vector<std::string>& level_data, std::vector <Tank*> tanks, std::vector<Projectile>& projectiles)
 {
+	m_frame_counter++;
+
 	m_tank_pos = glm::ivec2((m_position.x) / m_tank_size, (m_position.y) / m_tank_size);
 
 	float error = 0.05;
@@ -724,20 +719,21 @@ bool BotTank::update(MyEngine::InputManager input_manager, const std::vector<std
 			return false;
 		}
 
-		collide_with_level(level_data);
-
-		if (m_hp <= 0)
-		{
-			m_death_effect.play();
-			return true;
-
-		}
-
-		return false;
 
 	}
 
 	move(input_manager, level_data);
 	turret_rotate(input_manager, tanks.at(0));
 	shoot(projectiles, input_manager, tanks);
+
+	collide_with_level(level_data);
+
+	if (m_hp <= 0)
+	{
+		m_death_effect.play();
+		return true;
+
+	}
+
+	return false;
 }

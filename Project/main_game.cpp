@@ -59,7 +59,7 @@ void Game::init_system()
 	init_level();
 
 	MyEngine::Music music = m_audio_manager.load_music("Data/Sound/theme.mp3");
-	music.play();
+	//music.play();
 
 	m_camera.set_position(glm::vec2(64 * 12.5f, 64 * 6.5f));
 	m_camera.set_scale(0.5f);
@@ -226,16 +226,16 @@ void Game::draw_game()
 
 
 		BotTank* bot1 = new BotTank();
-		BotTank* bot2 = new BotTank();
-		BotTank* bot3 = new BotTank();
-		BotTank* bot4 = new BotTank();
-		BotTank* bot5 = new BotTank();
+		//BotTank* bot2 = new BotTank();
+		//BotTank* bot3 = new BotTank();
+		//BotTank* bot4 = new BotTank();
+		//BotTank* bot5 = new BotTank();
 
 		m_bots.push_back(bot1);
-		m_bots.push_back(bot2);
-		m_bots.push_back(bot3);
-		m_bots.push_back(bot4);
-		m_bots.push_back(bot5);
+		//m_bots.push_back(bot2);
+		//m_bots.push_back(bot3);
+		//m_bots.push_back(bot4);
+		//m_bots.push_back(bot5);
 
 		 enemy_start_pos.resize(m_bots.size());
 		 for (size_t i = 0; i < m_bots.size(); i++)

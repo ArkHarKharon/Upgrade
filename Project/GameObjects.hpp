@@ -26,6 +26,8 @@ class Projectile;
 
 class Level 
 {
+protected:
+
 	// Информация об уровне
 	float m_tile_size;								// Размер тайла уровня
 	glm::ivec2 m_start_position;					// Координаты начальной позиции игрока (в тайлах)
@@ -147,7 +149,6 @@ protected:
 	//Функции, отвечающие за стрельбу и перезарядку
 	void fire(glm::vec2 barrel_pos, glm::vec2 direction, std::vector<Projectile>& bullets);
 	bool reload(MyEngine::InputManager& input_manager);
-	bool test_shot(std::vector<Projectile>& projectiles, MyEngine::InputManager& input_manager, glm::vec2 barrel_pos, glm::vec2 direction, std::vector <Tank*> tanks);
 
 
 
@@ -210,7 +211,7 @@ public:
 
 class PlayerTank : public Tank
 {
-private:
+protected:
 	// Функции, содержащие алгоритмы, определяющие поведение танка
 	void virtual move(MyEngine::InputManager& input_manager, const std::vector<std::string>& level_data) override;
 	void virtual turret_rotate(MyEngine::InputManager& input_manager, Tank* player) override;
@@ -230,7 +231,7 @@ public:
 
 class BotTank : public Tank
 {
-private:
+protected:
 	
 	// Переменные, отвечающие за направление движения бота
 	int m_current_direction;					// Текущее направление движения бота по emun Directions
