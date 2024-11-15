@@ -52,10 +52,15 @@ namespace MyEngine
 		return m_screen_height;
 	}
 
+	SDL_Window* Window::get_window()
+	{
+		return m_sdl_window;
+	}
+
+
 	void Window::swap_buffer()
 	{
 		SDL_GL_SwapWindow(m_sdl_window);
-
 	}
 
 }
