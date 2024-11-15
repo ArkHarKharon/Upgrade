@@ -28,6 +28,7 @@ namespace MyEngine
 		int create(std::string window_name, int screen_width, int screen_height, unsigned int flag = SDL_WINDOW_OPENGL);
 		int get_width();
 		int get_height();
+		SDL_Window* get_window();
 
 		void swap_buffer();
 	};
