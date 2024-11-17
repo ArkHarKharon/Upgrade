@@ -1,7 +1,7 @@
 #include "main_game.hpp"
 
 Game::Game() :
-    m_window_width{ (float)25 * 32 }, m_window_height{ (float)13 * 32 },
+    m_window_width{ 1920 }, m_window_height{ 1080 },
     m_current_state{ GameState::GAME },
     m_time{ 0.0f },
     m_fps{ 0 },
@@ -37,6 +37,8 @@ void Game::init_shaders()
 void Game::init_system()
 {
     setlocale(0, "");
+    system("chcp1251");
+    system("cls");
     srand(time(0));
 
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -46,6 +48,8 @@ void Game::init_system()
 
 
     m_window.create("Upgrade!", m_window_width, m_window_height, MyEngine::WindowFlag::FULLSCREEN);
+
+    init_GUI();
 
     init_shaders();
 
@@ -61,45 +65,74 @@ void Game::init_system()
     music.play();
     Mix_Volume(-1, 20);
 
-    m_camera.set_position(glm::vec2(64 * 12.5f, 64 * 6.5f));
-    m_camera.set_scale(0.5f);
+    m_camera.set_position(glm::vec2(m_window_width + 20, m_window_height));
+    m_camera.set_scale(0.49f);
 
-    CEGUI::OpenGL3Renderer& my_renderer = CEGUI::OpenGL3Renderer::bootstrapSystem();
+
+}
+
+void Game::init_level()
+{
+    m_levels.push_back(new Level("Data/Level.txt"));
+    m_levels.push_back(new Level("Data/Level1.txt"));
+}
+
+void Game::init_GUI()
+{
+    m_gui.init("C:/Users/ArkHarKharon/source/repos/ArkHarKharon/Upgrade/GUI");
+    m_gui.load_scheme("TaharezLook.scheme");
+    m_gui.set_mouse_cursor("TaharezLook/MouseArrow");
+    m_gui.show_mouse_cursor();
+    SDL_ShowCursor(0);
+    m_gui.set_font("DejaVuSans-10");
+
+    CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(m_gui.create_widget("TaharezLook/Button", glm::vec4(0.5f, 0.5f, 0.1f, 0.05f), glm::vec4(0.0f), "button"));
+    button->setText("EXIT SUKAAAAA!!!!");
+
+    button->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&Game::exit_clicked, this));
+}
+
+bool Game::exit_clicked(const CEGUI::EventArgs& e)
+{
+    m_current_state = GameState::EXIT;
+
+    return true;
 }
 
 void Game::process_input()
 {
-    SDL_Event event;
+    SDL_Event evnt;
 
-    while (SDL_PollEvent(&event))
+    while (SDL_PollEvent(&evnt))
     {
-        switch (event.type)
+        switch (evnt.type)
         {
         case(SDL_QUIT):
             m_current_state = GameState::EXIT;
             break;
 
         case(SDL_MOUSEMOTION):
-            m_input_manager.set_mouse_coords(event.motion.x, event.motion.y);
+            m_input_manager.set_mouse_coords(evnt.motion.x, evnt.motion.y);
             break;
 
         case(SDL_MOUSEBUTTONDOWN):
-            m_input_manager.press_key(event.button.button);
+            m_input_manager.press_key(evnt.button.button);
             break;
 
         case(SDL_MOUSEBUTTONUP):
-            m_input_manager.release_key(event.button.button);
+            m_input_manager.release_key(evnt.button.button);
             break;
 
         case(SDL_KEYDOWN):
-            m_input_manager.press_key(event.key.keysym.sym);
+            m_input_manager.press_key(evnt.key.keysym.sym);
             break;
 
         case(SDL_KEYUP):
-            m_input_manager.release_key(event.key.keysym.sym);
+            m_input_manager.release_key(evnt.key.keysym.sym);
             break;
 
         }
+        m_gui.on_SDL_event(evnt);
     };
 }
 
@@ -162,18 +195,25 @@ void Game::draw_game()
         m_tanks.at(i)->draw(m_tank_sprite_batch);
     }
 
+
+
+
+
+
     m_tank_sprite_batch.end();
 
     m_tank_sprite_batch.render_batch();
 
+
     m_color_program.unuse();
 
-    m_window.swap_buffer();
-}
+    m_gui.draw();
 
-void Game::init_level()
-{
-    m_levels.push_back(new Level("Data/Level.txt"));
+
+    m_window.swap_buffer();
+
+
+   
 }
 
 void Game::start_round()

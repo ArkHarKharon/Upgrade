@@ -173,6 +173,7 @@
     <ClInclude Include="Errors.hpp" />
     <ClInclude Include="GLSL.hpp" />
     <ClInclude Include="GLTexture.hpp" />
+    <ClInclude Include="GUI.hpp" />
     <ClInclude Include="ImageLoader.hpp" />
     <ClInclude Include="InputManager.hpp" />
     <ClInclude Include="IOManager.hpp" />
@@ -190,6 +191,7 @@
     <ClCompile Include="Camera2D.cpp" />
     <ClCompile Include="Errors.cpp" />
     <ClCompile Include="GLSL.cpp" />
+    <ClCompile Include="GUI.cpp" />
     <ClCompile Include="ImageLoader.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="IOManager.cpp" />

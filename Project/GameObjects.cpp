@@ -135,21 +135,23 @@ Level::Level(const std::string& level_file) : m_tile_size{ TILE_SIZE }
 
             case('e'):
                 m_enemy_positions.push_back(glm::ivec2(x * m_tile_size, y * m_tile_size));
+                m_knots.push_back(glm::ivec2(x * m_tile_size, y * m_tile_size));
                 break;
 
-            case(' '):
+            case('k'):
+                m_knots.push_back(glm::ivec2(x * m_tile_size, y * m_tile_size));
+                break;
+
+            case('f'):
                 break;
 
             case('z'):
                 m_level_data.at(y).at(x) = ' ';
                 break;
 
-            case('s'):
+            case('p'):
                 m_start_position = glm::ivec2(x * m_tile_size, y * m_tile_size);
                 break;
-
-                
-
 
             case('w'):
                 m_sprite_batch.draw(dest_rect, uv_rect,
@@ -194,7 +196,7 @@ glm::ivec2 Level::get_enemy_pos()
 {
     int current_pos_number = get_random_int(0, m_enemy_positions.size() - 1);
     //std::cout << current_pos_number;
-    return m_enemy_positions.at(current_pos_number);
+    return glm::ivec2(m_enemy_positions.at(current_pos_number).x, m_enemy_positions.at(current_pos_number).y);
 }
 
 std::vector<std::string>& Level::get_level_data()
@@ -509,7 +511,7 @@ void PlayerTank::turret_rotate(MyEngine::InputManager& input_manager, Tank* play
         m_turret_angle = 0;
 
 
-    glm::vec2 pos = glm::vec2(m_position.x + m_tank_size / 2, 768 - m_position.y + m_tank_size / 2);
+    glm::vec2 pos = glm::vec2(m_position.x + m_tank_size / 2, m_position.y + m_tank_size / 2 - 20);
     glm::vec2 mouse = input_manager.get_mouse_coords();
     mouse = glm::vec2(mouse.x * 2, mouse.y * 2);
 
@@ -758,9 +760,23 @@ bool BotTank::update(MyEngine::InputManager input_manager, const std::vector<std
 
     m_tank_pos = glm::ivec2((m_position.x) / m_tank_size, (m_position.y) / m_tank_size);
 
+    bool is_player_found = false;
+    short int player_id{};
+
+    for (size_t i = 0; i < tanks.size(); i++)
+    {
+        if (tanks.at(i)->is_controlable())
+        {
+            is_player_found = true;
+            player_id = i;
+        }
+    }
+
+
+
     float error = 0.05;
 
-    if ((level_data.at(m_tank_pos.y).at(m_tank_pos.x) == 'e' or level_data.at(m_tank_pos.y).at(m_tank_pos.x) == 's'))
+    if ((level_data.at(m_tank_pos.y).at(m_tank_pos.x) == 'e' or level_data.at(m_tank_pos.y).at(m_tank_pos.x) == 's') or level_data.at(m_tank_pos.y).at(m_tank_pos.x) == 'k')
     {
         glm::vec2 curr_knot_pos = glm::vec2(m_tank_pos.x * m_tank_size + m_tank_size / 2, m_tank_pos.y * m_tank_size + m_tank_size / 2);
         if ((curr_knot_pos.x + error > m_position.x + m_tank_size / 2 and curr_knot_pos.y + error > m_position.y + m_tank_size / 2) and (curr_knot_pos.x - error < m_position.x + m_tank_size / 2 and curr_knot_pos.y - error < m_position.y + m_tank_size / 2))
@@ -773,6 +789,12 @@ bool BotTank::update(MyEngine::InputManager input_manager, const std::vector<std
             {
                 m_possible_directions.push_back(UP);
                 directions_number++;
+
+                if (m_position.y < tanks.at(player_id)->get_position().y)
+                {
+                    m_possible_directions.push_back(UP);
+                    directions_number++;
+                }
             }
 
 
@@ -780,6 +802,12 @@ bool BotTank::update(MyEngine::InputManager input_manager, const std::vector<std
             {
                 m_possible_directions.push_back(DOWN);
                 directions_number++;
+
+                if (m_position.y > tanks.at(player_id)->get_position().y)
+                {
+                    m_possible_directions.push_back(DOWN);
+                    directions_number++;
+                }
             }
 
 
@@ -787,12 +815,24 @@ bool BotTank::update(MyEngine::InputManager input_manager, const std::vector<std
             {
                 m_possible_directions.push_back(RIGHT);
                 directions_number++;
+
+                if (m_position.x < tanks.at(player_id)->get_position().x)
+                {
+                    m_possible_directions.push_back(RIGHT);
+                    directions_number++;
+                }
             }
 
             if ((level_data.at(m_tank_pos.y).at(m_tank_pos.x - 1) != 'w') and (level_data.at(m_tank_pos.y).at(m_tank_pos.x - 1) != 'b'))
             {
                 m_possible_directions.push_back(LEFT);
                 directions_number++;
+
+                if (m_position.x > tanks.at(player_id)->get_position().x)
+                {
+                    m_possible_directions.push_back(LEFT);
+                    directions_number++;
+                }
             }
 
             static std::mt19937 random_engine(time(0));
@@ -814,19 +854,6 @@ bool BotTank::update(MyEngine::InputManager input_manager, const std::vector<std
             case(LEFT):
                 m_position.x -= m_speed;
             }
-
-            bool is_player_found = false;
-            short int player_id;
-
-            for (size_t i = 0; i < tanks.size(); i++)
-            {
-                if (tanks.at(i)->is_controlable())
-                {
-                    is_player_found = true;
-                    player_id = i;
-                }
-            }
-
 
             move(input_manager, level_data);
             if (is_player_found)
@@ -851,7 +878,7 @@ bool BotTank::update(MyEngine::InputManager input_manager, const std::vector<std
     }
 
     move(input_manager, level_data);
-    turret_rotate(input_manager, tanks.at(0));
+    turret_rotate(input_manager, tanks.at(player_id));
     shoot(input_manager, tanks, level_data);
 
     collide_with_level(level_data);
@@ -992,7 +1019,7 @@ void GameManager::bot_number_control(std::vector<BotTank*>& bots, std::vector<Ta
 
     }
 
-    if (m_frame_count > 50000)
+    if (m_frame_count > 25000)
     {
         if (tanks.size() - 1 < bot_num_limit)
         {
@@ -1061,40 +1088,42 @@ void GameManager::session_control(std::vector<BotTank*>& bots, std::vector<Tank*
 
 void GameManager::session_control_init_setting()
 {
-    system("cls");
+    //system("cls");
 
-    std::cout
-        << "Выберите уровень сложности:\n"
-        << "1) Лёгкий (боты в 4 раза слабее игрока, 25 очков за бота)\n"
-        << "2) Нормальный (боты в 2 раза слабее игрока, 100 очков за бота)\n"
-        << "3) Тяжелый (боты равны игроку, 200 очков за бота)\n"
-        << "4) Невозможный (боты в 1.5 раза сильнее, 400 очков за бота)\n"
-        << "Выбор: ";
+    //std::cout
+    //    << "Выберите уровень сложности:\n"
+    //    << "1) Лёгкий (боты в 4 раза слабее игрока, 25 очков за бота)\n"
+    //    << "2) Нормальный (боты в 2 раза слабее игрока, 100 очков за бота)\n"
+    //    << "3) Тяжелый (боты равны игроку, 200 очков за бота)\n"
+    //    << "4) Невозможный (боты в 1.5 раза сильнее, 400 очков за бота)\n"
+    //    << "Выбор: ";
 
-    short int choice;
-    std::cin >> choice;//
+    //short int choice;
+    //std::cin >> choice;//
 
-    m_difficulty = choice;
+    //m_difficulty = choice;
 
-    switch (choice)
-    {
-    case(EASY):
-        m_bot_strengh_scale = 0.25f;
-        break;
+    //switch (choice)
+    //{
+    //case(EASY):
+    //    m_bot_strengh_scale = 0.25f;
+    //    break;
 
-    case(NORMAL):
-        m_bot_strengh_scale = 0.5f;
-        break;
+    //case(NORMAL):
+    //    m_bot_strengh_scale = 0.5f;
+    //    break;
 
-    case(HARD):
-        m_bot_strengh_scale = 1.0f;
-        break;
+    //case(HARD):
+    //    m_bot_strengh_scale = 1.0f;
+    //    break;
 
-    case(IMPOSIBLE):
-        m_bot_strengh_scale = 1.5f;
-        break;
+    //case(IMPOSIBLE):
+    //    m_bot_strengh_scale = 1.5f;
+    //    break;
 
-    }
+    //}
+
+    m_bot_strengh_scale = 0.25f;
 }
 
 void GameManager::increase_score()

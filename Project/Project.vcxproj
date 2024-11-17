@@ -162,10 +162,12 @@
   <ItemGroup>
     <ClCompile Include="GameObjects.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="main_game.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameObjects.hpp" />
+    <ClInclude Include="MainMenu.hpp" />
     <ClInclude Include="main_game.hpp" />
   </ItemGroup>
   <ItemGroup>

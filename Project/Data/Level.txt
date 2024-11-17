@@ -1,13 +1,34 @@
-bbbbbbbbbbbbbbbbbbbbbbbbb
-be    e     e     e    eb
-b www   www   www   www b
-b we     ew   we     ew b
-b w ww ww w   w ww ww w b
-b       w       w       b
-be e  e  e  s  e  e  e eb
-b       w       w       b
-b w ww ww w   w ww ww w b
-b we     ew   we     ew b
-b www   www   www   www b
-be    e     e     e    eb
-bbbbbbbbbbbbbbbbbbbbbbbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb
+bbbffffffbffffffffffffffffffffbffffffffffffffffffffbffffffbbb
+bbeffffffeffffffffffffffffffffeffffffffffffffffffffeffffffebb
+bffffffffffwffffwfffffwfffffwfffwfffffwfffffwffffwffffffffffb
+bfffwwwwfffwwwwwwwwwwwwwwwwwwfffwwwwwwwwwwwwwwwwwwfffwwwwfffb
+bfffwwwwfffwwwfffffffwffffffwfffwffffffwfffffffwwwfffwwwwfffb
+bfffwwwwfffwwkfffffffkffffffffkffffffffkfffffffkwwfffwwwwfffb
+bfffwwwwfffwfffffffwfffwffffffwffffffwfffwfffffffwfffwwwwfffb
+bfffffffffwwfffwwwwwfffwwwwwwwwwwwwwwwfffwwwwwfffwwfffffffffb
+bffffffffffffffwwwffffffffwfffffffwffffffffwwwffffffffffffffb
+bbeffffffkfffkwwwkfffkfffffffffffffffffkfffkwwwkfffkffffffebb
+bffffffffffffffwfffwwwwwwwwwwwwwwwwwwwwwwwfffwffffffffffffffb
+bfffffffffwwfffwffffkffffffffffkfffkffkffwfffwfffwwfffffffffb
+bfffwwwwfffwfffwfkffkfffffffffffffffffkffffkfwfffwfffwwwwfffb
+bfffwwwwfffwfffwwwwwwwwwwwwwffpffwfffwwwwwwwwwfffwfffwwwwfffb
+bfffwwwwfffwfffffffffffffwwwwffffwfffffffffffffffwfffwwwwfffb
+bfffwwwwfffwwkfffffffffffkwwwwfffwfffffffffffffffwfffwwwwfffb
+bfffwwwwfffwfffffffffffffffwwkfkwwwkfffffffffffkwwfffwwwwfffb
+bfffwwwwfffwfffffffffffwfffwfffwwwwwfffffffffffffwfffwwwwfffb
+bfffwwwwfffwfffwwwwwwwwwfffwfffwwwwwwwwwwwwwwwfffwfffwwwwfffb
+bfffwwwwfffwfffwfkffkffffkffffffffffffffkffkwwfffwfffwwwwfffb
+bfffffffffwwfffwfffwkffffkfffkffffffffffkwfffwfffwwfffffffffb
+bffffffffffffffwfffwwwwwwwwwwwwwwwwwwwwwwwfffwffffffffffffffb
+bbeffffffkfffkwwwkfffkfffffffffffffffffkfffkwwwkfffkffffffebb
+bffffffffffffffwwwffffffffwfffffffwffffffffwwwffffffffffffffb
+bfffffffffwwfffwwwwwfffwwwwwwwwwwwwwwwfffwwwwwfffwwfffffffffb
+bfffwwwwfffwfffffffwfffwffffffwffffffwfffwfffffffwfffwwwwfffb
+bfffwwwwfffwwkfffffffkffffffffkffffffffkfffffffkwwfffwwwwfffb
+bfffwwwwfffwwwfffffffwffffffwfffwffffffwfffffffwwwfffwwwwfffb
+bfffwwwwfffwwwwwwwwwwwwwwwwwwfffwwwwwwwwwwwwwwwwwwfffwwwwfffb
+bffffffffffwffffwffffffwffffwfffwfffffwfffffwffffwffffffffffb
+bbeffffffeffffffffffffffffffffeffffffffffffffffffffeffffffebb
+bbbffffffbffffffffffffffffffffbffffffffffffffffffffbffffffbbb
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb

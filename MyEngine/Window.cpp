@@ -17,7 +17,7 @@ namespace MyEngine
 	int Window::create(std::string window_name, int screen_width, int screen_height, unsigned int flag)
 	{
 		Uint32 flags = SDL_WINDOW_OPENGL;
-		flags = flags | SDL_WINDOW_RESIZABLE;
+		flags = flags | SDL_WINDOW_FULLSCREEN;
 
 		m_sdl_window = SDL_CreateWindow(window_name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen_width, screen_height, flags);
 		if (m_sdl_window == nullptr)

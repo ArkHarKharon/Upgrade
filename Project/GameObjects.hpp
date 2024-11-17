@@ -31,14 +31,15 @@ class Level
 protected:
 
     // Информация об уровне
-    float m_tile_size;                // Размер тайла уровня
-    glm::ivec2 m_start_position;          // Координаты начальной позиции игрока (в тайлах)
-    std::vector<glm::ivec2> m_enemy_positions;    // Вектор начальных (и узловых) позиций ботов (в тайлах)
+    float m_tile_size;                            // Размер тайла уровня
+    glm::ivec2 m_start_position;                  // Координаты начальной позиции игрока (в тайлах)
+    std::vector<glm::ivec2> m_enemy_positions;    // Вектор начальных позиций ботов (в тайлах)
+    std::vector<glm::ivec2> m_knots;              // Вектор узлов ботов(в тайлах)
 
 
 
     // Объекты модулей приложения
-    MyEngine::SpriteBatch m_sprite_batch;  // Модуль, отвечающий за отрисовку уровня
+    MyEngine::SpriteBatch m_sprite_batch;        // Модуль, отвечающий за отрисовку уровня
 
 
 
