@@ -13,6 +13,12 @@ namespace MyEngine
 	{
 
 	}
+	
+	void InputManager::update()
+	{
+		for (auto& it : m_key_map)
+			m_previous_key_map[it.first] = it.second;
+	}
 
 	void InputManager::press_key(unsigned int key_id)
 	{
@@ -23,16 +29,39 @@ namespace MyEngine
 		m_key_map[key_id] = false;
 	}
 
-	bool InputManager::key_is_pressed(unsigned int key_id)
+	bool InputManager::is_key_pressed(unsigned int key_id)
+	{
+		if (is_key_down(key_id) == true and was_key_down(key_id) == false) 
+			return true;
+
+		return false;
+	}
+
+	bool InputManager::is_key_down(unsigned int key_id)
 	{
 		auto key = m_key_map.find(key_id);
 
 		if (key != m_key_map.end())
 			return key->second;
 
-		else 
+		else
+			return false;
+
+	}
+
+	bool InputManager::was_key_down(unsigned int key_id)
+	{
+		auto key = m_previous_key_map.find(key_id);
+
+		if (key != m_previous_key_map.end())
+			return key->second;
+
+		else
 			return false;
 	}
+
+
+
 
 	void InputManager::set_mouse_coords(int x, int y)
 	{

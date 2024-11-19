@@ -17,7 +17,19 @@ namespace MyEngine
 	int Window::create(std::string window_name, int screen_width, int screen_height, unsigned int flag)
 	{
 		Uint32 flags = SDL_WINDOW_OPENGL;
-		flags = flags | SDL_WINDOW_FULLSCREEN;
+		
+		m_screen_width = screen_width;
+		m_screen_height = screen_height;
+
+		if (flag & INVISIBLE) {
+			flags |= SDL_WINDOW_HIDDEN;
+		}
+		if (flag & FULLSCREEN) {
+			flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+		}
+		if (flag & BORDERLESS) {
+			flags |= SDL_WINDOW_BORDERLESS;
+		}
 
 		m_sdl_window = SDL_CreateWindow(window_name.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, screen_width, screen_height, flags);
 		if (m_sdl_window == nullptr)

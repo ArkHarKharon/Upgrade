@@ -142,7 +142,7 @@ void Game::game_loop()
     {
         process_input();
 
-        if (m_input_manager.key_is_pressed(SDLK_HOME))
+        if (m_input_manager.is_key_pressed(SDLK_HOME))
         {
             m_game_manager.end_screen(m_bots, m_tanks, m_levels, m_audio_manager);
         }

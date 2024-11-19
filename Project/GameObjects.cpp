@@ -435,7 +435,7 @@ void Tank::fire(glm::vec2 barrel_pos, glm::vec2 direction)
 
 bool Tank::reload(MyEngine::InputManager& input_manager)
 {
-    if (input_manager.key_is_pressed(SDLK_r))
+    if (input_manager.is_key_pressed(SDLK_r))
     {
         if (m_control)
         {
@@ -477,25 +477,25 @@ bool Tank::reload(MyEngine::InputManager& input_manager)
 
 void PlayerTank::move(MyEngine::InputManager& input_manager, const std::vector<std::string>& level_data)
 {
-    if (input_manager.key_is_pressed(SDLK_w))
+    if (input_manager.is_key_down(SDLK_w))
     {
         if (rotate(m_direction.up) == true)
             m_position.y += m_speed;
     }
 
-    else if (input_manager.key_is_pressed(SDLK_s))
+    else if (input_manager.is_key_down(SDLK_s))
     {
         if (rotate(m_direction.down) == true)
             m_position.y -= m_speed;
     }
 
-    else if (input_manager.key_is_pressed(SDLK_a))
+    else if (input_manager.is_key_down(SDLK_a))
     {
         if (rotate(m_direction.left) == true)
             m_position.x -= m_speed;
     }
 
-    else if (input_manager.key_is_pressed(SDLK_d))
+    else if (input_manager.is_key_down(SDLK_d))
     {
         if (rotate(m_direction.right) == true)
             m_position.x += m_speed;
@@ -567,7 +567,7 @@ void PlayerTank::shoot(MyEngine::InputManager& input_manager, std::vector <Tank*
     glm::vec2 top(0.0f, 1.0f);//
     glm::vec2 direction = glm::rotate(top, m_turret_angle + accuracy_angle(random_engine));
 
-    if (!reload(input_manager) and m_frame_counter >= m_fire_rate and input_manager.key_is_pressed(SDL_BUTTON_LEFT))
+    if (!reload(input_manager) and m_frame_counter >= m_fire_rate and input_manager.is_key_pressed(SDL_BUTTON_LEFT))
     {
         fire(def_pos, direction);
         m_frame_counter = 0;

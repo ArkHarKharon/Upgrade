@@ -174,11 +174,14 @@
     <ClInclude Include="GLSL.hpp" />
     <ClInclude Include="GLTexture.hpp" />
     <ClInclude Include="GUI.hpp" />
+    <ClInclude Include="IGameScreen.hpp" />
     <ClInclude Include="ImageLoader.hpp" />
     <ClInclude Include="InputManager.hpp" />
     <ClInclude Include="IOManager.hpp" />
+    <ClInclude Include="IMainGame.hpp" />
     <ClInclude Include="picoPNG.hpp" />
     <ClInclude Include="ResourceManager.hpp" />
+    <ClInclude Include="ScreenList.hpp" />
     <ClInclude Include="Sprite.hpp" />
     <ClInclude Include="SpriteBatch.hpp" />
     <ClInclude Include="TextureCache.hpp" />
@@ -195,8 +198,10 @@
     <ClCompile Include="ImageLoader.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="IOManager.cpp" />
+    <ClCompile Include="IMainGame.cpp" />
     <ClCompile Include="picoPNG.cpp" />
     <ClCompile Include="ResourceManager.cpp" />
+    <ClCompile Include="ScreenList.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="SpriteBatch.cpp" />
     <ClCompile Include="TextureCache.cpp" />
