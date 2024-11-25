@@ -63,7 +63,7 @@ namespace MyEngine
 
 
 
-	void InputManager::set_mouse_coords(int x, int y)
+	void InputManager::set_mouse_coords(float x, float y)
 	{
 		m_mouse_coords.x = x;
 		m_mouse_coords.y = y;

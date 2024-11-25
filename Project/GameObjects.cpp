@@ -295,33 +295,36 @@ void Tank::draw(MyEngine::SpriteBatch& sprite_batch)
 
     glm::vec4 turret_dest_rect(m_position.x + 9, m_position.y - 30, 45, 125);
 
-    
-
-
-        if (is_controlable())
-        {
-            sprite_batch.draw(dest_rect, uv_rect, m_texture.id, 0.5f, player_color, m_angle);
-            sprite_batch.draw(turret_dest_rect, uv_rect, m_turret_texture.id, 0.5f, player_color, m_turret_angle);
-        }
-
-        else
-        {
-            sprite_batch.draw(dest_rect, uv_rect, m_texture.id, 0.5f, enemy_color, m_angle);
-            sprite_batch.draw(turret_dest_rect, uv_rect, m_turret_texture.id, 0.5f, enemy_color, m_turret_angle);
-        }
-
-
     glm::vec4 hp_dest_rect(m_position.x - 18, m_position.y + m_tank_size + 25, 100 * ((float)m_hp / (float)m_max_hp), 10);
     glm::vec4 ammo_dest_rect(m_position.x - 18, m_position.y + m_tank_size + 10, 100 * ((float)m_ammo_current / (float)m_ammo_max), 10);
 
-    sprite_batch.draw(hp_dest_rect, uv_rect, m_hp_texture.id, 1.0f, player_color, 0.0f);
-    sprite_batch.draw(ammo_dest_rect, uv_rect, m_ammo_texture.id, 1.0f, player_color, 0.0f);
 
+
+    // Отрисовка снарядов
     for (int i = 0; i < m_projectiles.size(); i++)
     {
         if (!m_projectiles.at(i).is_test())
             m_projectiles.at(i).draw(sprite_batch);
     }
+
+    // Отрисовка корпуса
+    if (is_controlable())
+        sprite_batch.draw(dest_rect, uv_rect, m_texture.id, 0.5f, player_color, m_angle);
+    else
+        sprite_batch.draw(dest_rect, uv_rect, m_texture.id, 0.5f, enemy_color, m_angle);
+
+
+    // Отрисовка башни
+    if (is_controlable())
+       sprite_batch.draw(turret_dest_rect, uv_rect, m_turret_texture.id, 0.5f, player_color, m_turret_angle);
+    else
+       sprite_batch.draw(turret_dest_rect, uv_rect, m_turret_texture.id, 0.5f, enemy_color, m_turret_angle);
+
+
+    // Отрисовка полосок HP и боезапаса
+    sprite_batch.draw(hp_dest_rect, uv_rect, m_hp_texture.id, 1.0f, player_color, 0.0f);
+    sprite_batch.draw(ammo_dest_rect, uv_rect, m_ammo_texture.id, 1.0f, player_color, 0.0f);
+
 }
 
 void Tank::check_tile_pos(const std::vector<std::string>& level_data, std::vector<glm::vec2>& collide_tile_pos, float x, float y)
@@ -903,9 +906,6 @@ GameManager::GameManager() : m_score{ 0 }, m_frame_count{ 0 }, m_max_player_live
 {
     m_current_player_lives = m_max_player_lives;
 }
-
-
-
 
 void GameManager::start_round(std::vector<BotTank*>& bots, std::vector<Tank*>& tanks, std::vector <Level*>& levels, MyEngine::AudioManager& audio_manager, bool bot_spawn)
 {

@@ -68,7 +68,6 @@ namespace MyEngine
 		}
 		void set_running()
 		{
-			std::cout << "Запускаю!\n";
 			m_current_state = ScreenState::RUNNING;
 		}
 	};

@@ -86,7 +86,7 @@ void Game::init_GUI()
     SDL_ShowCursor(0);
     m_gui.set_font("DejaVuSans-10");
 
-    CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(m_gui.create_widget("TaharezLook/Button", glm::vec4(0.5f, 0.5f, 0.1f, 0.05f), glm::vec4(0.0f), "button"));
+    CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(m_gui.create_widget("TaharezLook/Button", glm::vec4(0.9f, 0.05f, 0.1f, 0.05f), glm::vec4(0.0f), "button"));
     button->setText("EXIT SUKAAAAA!!!!");
 
     button->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&Game::exit_clicked, this));

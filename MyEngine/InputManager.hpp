@@ -33,7 +33,7 @@ namespace MyEngine
 
 		bool is_key_pressed(unsigned int key_id);
 
-		void set_mouse_coords(int x, int y);
+		void set_mouse_coords(float x, float y);
 		glm::vec2 get_mouse_coords();
 	};
 }

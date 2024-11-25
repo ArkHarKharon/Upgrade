@@ -8,7 +8,7 @@
 class GameApp : public MyEngine::IMainGame
 {
 private:
-	GameScreen* m_gameplay_screen = nullptr;
+	GameplayScreen* m_gameplay_screen = nullptr;
 
 public:
 	GameApp();

@@ -32,7 +32,9 @@ namespace MyEngine
 
 			m_input_manager.update();
 			update();
-			draw();
+			
+			if(m_is_running)
+				draw();
 
 
 
@@ -71,7 +73,7 @@ namespace MyEngine
 	bool IMainGame::init_system()
 	{
 
-		m_window.create("Default", 800, 600, 0);
+		m_window.create("Default", 1920, 1080, FULLSCREEN);
 
 		return true;
 	}
@@ -139,7 +141,6 @@ namespace MyEngine
 
 		if (m_current_screen and m_current_screen->get_current_state() == ScreenState::RUNNING)
 		{
-			std::cout << "бѓър!";
 			m_current_screen->draw();
 		}
 	}
@@ -149,11 +150,11 @@ namespace MyEngine
 		switch (event.type)
 		{
 		case(SDL_QUIT):
-			m_is_running = false;
+			exit_game();
 			break;
 
 		case(SDL_MOUSEMOTION):
-			m_input_manager.set_mouse_coords(event.motion.x, event.motion.y);
+			m_input_manager.set_mouse_coords((float)event.motion.x, (float)event.motion.y);
 			break;
 
 		case(SDL_MOUSEBUTTONDOWN):
