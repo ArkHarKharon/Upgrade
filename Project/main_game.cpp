@@ -22,7 +22,7 @@ Game::~Game()
 void Game::run()
 {
     init_system();
-    game_loop();
+    //game_loop();
 }
 
 void Game::init_shaders()
@@ -37,8 +37,6 @@ void Game::init_shaders()
 void Game::init_system()
 {
     setlocale(0, "");
-    system("chcp1251");
-    system("cls");
     srand(time(0));
 
     SDL_Init(SDL_INIT_EVERYTHING);
@@ -47,26 +45,26 @@ void Game::init_system()
     glDepthFunc(GL_LESS); //
 
 
-    m_window.create("Upgrade!", m_window_width, m_window_height, MyEngine::WindowFlag::FULLSCREEN);
+    //m_window.create("Upgrade!", m_window_width, m_window_height, MyEngine::WindowFlag::FULLSCREEN);
 
-    init_GUI();
+    //init_GUI();
 
-    init_shaders();
+    //init_shaders();
 
-    m_tank_sprite_batch.init();
+    //m_tank_sprite_batch.init();
 
-    m_fps_limiter.init(m_max_fps);
+    //m_fps_limiter.init(m_max_fps);
 
-    m_audio_manager.init();
+    //m_audio_manager.init();
 
-    init_level();
+    //init_level();
 
     MyEngine::Music music = m_audio_manager.load_music("Data/Sound/theme.mp3");
     music.play();
     Mix_Volume(-1, 20);
 
-    m_camera.set_position(glm::vec2(m_window_width + 20, m_window_height));
-    m_camera.set_scale(0.49f);
+    //m_camera.set_position(glm::vec2(m_window_width + 20, m_window_height));
+    //m_camera.set_scale(0.49f);
 
 
 }
@@ -77,27 +75,27 @@ void Game::init_level()
     m_levels.push_back(new Level("Data/Level1.txt"));
 }
 
-void Game::init_GUI()
-{
-    m_gui.init("C:/Users/ArkHarKharon/source/repos/ArkHarKharon/Upgrade/GUI");
-    m_gui.load_scheme("TaharezLook.scheme");
-    m_gui.set_mouse_cursor("TaharezLook/MouseArrow");
-    m_gui.show_mouse_cursor();
-    SDL_ShowCursor(0);
-    m_gui.set_font("DejaVuSans-10");
+//void Game::init_GUI()
+//{
+//    m_gui.init("C:/Users/ArkHarKharon/source/repos/ArkHarKharon/Upgrade/GUI");
+//    m_gui.load_scheme("TaharezLook.scheme");
+//    m_gui.set_mouse_cursor("TaharezLook/MouseArrow");
+//    m_gui.show_mouse_cursor();
+//    SDL_ShowCursor(0);
+//    m_gui.set_font("DejaVuSans-10");
+//
+//    CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(m_gui.create_widget("TaharezLook/Button", glm::vec4(0.9f, 0.05f, 0.1f, 0.05f), glm::vec4(0.0f), "button"));
+//    button->setText("EXIT SUKAAAAA!!!!");
+//
+//    button->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&Game::exit_clicked, this));
+//}
 
-    CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(m_gui.create_widget("TaharezLook/Button", glm::vec4(0.9f, 0.05f, 0.1f, 0.05f), glm::vec4(0.0f), "button"));
-    button->setText("EXIT SUKAAAAA!!!!");
-
-    button->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&Game::exit_clicked, this));
-}
-
-bool Game::exit_clicked(const CEGUI::EventArgs& e)
-{
-    m_current_state = GameState::EXIT;
-
-    return true;
-}
+//bool Game::exit_clicked(const CEGUI::EventArgs& e)
+//{
+//    m_current_state = GameState::EXIT;
+//
+//    return true;
+//}
 
 void Game::process_input()
 {
@@ -132,7 +130,7 @@ void Game::process_input()
             break;
 
         }
-        m_gui.on_SDL_event(evnt);
+       // m_gui.on_SDL_event(evnt);
     };
 }
 
@@ -207,7 +205,7 @@ void Game::draw_game()
 
     m_color_program.unuse();
 
-    m_gui.draw();
+    //m_gui.draw();
 
 
     m_window.swap_buffer();

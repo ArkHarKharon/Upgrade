@@ -5,7 +5,7 @@
 
 int main(int argc, char** argv)
 {
-	GameApp main_game;
+	Game main_game;
 
 	main_game.run();
 

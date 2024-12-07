@@ -101,7 +101,7 @@ void GameplayScreen::draw()
 
     m_color_program.unuse();
 
-    m_gui.draw();
+    //m_gui.draw();
 
 
 }
@@ -135,7 +135,7 @@ void GameplayScreen::init_system()
     system("cls");
     srand(time(0));
 
-    init_GUI();
+    //init_GUI();
     init_shaders();
 
     m_tank_sprite_batch.init();
@@ -170,24 +170,24 @@ void GameplayScreen::init_level()
 
 }
 
-void GameplayScreen::init_GUI()
-{
-    m_gui.init("C:/Users/ArkHarKharon/source/repos/ArkHarKharon/Upgrade/GUI");
-    m_gui.load_scheme("TaharezLook.scheme");
-    m_gui.set_mouse_cursor("TaharezLook/MouseArrow");
-    m_gui.show_mouse_cursor();
-    SDL_ShowCursor(0);
-    m_gui.set_font("DejaVuSans-10");
+//void GameplayScreen::init_GUI()
+//{
+//    m_gui.init("C:/Users/ArkHarKharon/source/repos/ArkHarKharon/Upgrade/GUI");
+//    m_gui.load_scheme("TaharezLook.scheme");
+//    m_gui.set_mouse_cursor("TaharezLook/MouseArrow");
+//    m_gui.show_mouse_cursor();
+//    SDL_ShowCursor(0);
+//    m_gui.set_font("DejaVuSans-10");
+//
+//    CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(m_gui.create_widget("TaharezLook/Button", glm::vec4(0.5f, 0.5f, 0.1f, 0.05f), glm::vec4(0.0f), "button"));
+//    button->setText("EXIT SUKAAAAA!!!!");
+//
+//    button->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameplayScreen::exit_clicked, this));
+//}
 
-    CEGUI::PushButton* button = static_cast<CEGUI::PushButton*>(m_gui.create_widget("TaharezLook/Button", glm::vec4(0.5f, 0.5f, 0.1f, 0.05f), glm::vec4(0.0f), "button"));
-    button->setText("EXIT SUKAAAAA!!!!");
-
-    button->subscribeEvent(CEGUI::PushButton::EventClicked, CEGUI::Event::Subscriber(&GameplayScreen::exit_clicked, this));
-}
-
-bool GameplayScreen::exit_clicked(const CEGUI::EventArgs& e)
-{
-    m_current_state = MyEngine::ScreenState::NONE;
-
-    return true;
-}
+//bool GameplayScreen::exit_clicked(const CEGUI::EventArgs& e)
+//{
+//    m_current_state = MyEngine::ScreenState::NONE;
+//
+//    return true;
+//}

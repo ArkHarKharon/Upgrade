@@ -15,7 +15,7 @@
 #include <MyEngine/InputManager.hpp>
 #include <MyEngine/Timing.hpp>
 #include <MyEngine/AudioManager.hpp>
-#include <MyEngine/GUI.hpp>
+//#include <MyEngine/GUI.hpp>
 
 #include "GameObjects.hpp"
 
@@ -61,7 +61,7 @@ protected:
     MyEngine::SpriteBatch m_tank_sprite_batch;   // Модуль отрисовки танков
     MyEngine::InputManager m_input_manager;      // Менеджер ввода
     MyEngine::AudioManager m_audio_manager;      // Менеджер аудио
-    MyEngine::GUI m_gui;                         // Модуль графического интерфейса
+   // MyEngine::GUI m_gui;                         // Модуль графического интерфейса
 
 
 
@@ -79,7 +79,7 @@ protected:
     void init_system();      // Функция инициализации всех систем
     void init_shaders();     // Функция инициализации шейдеров
     void init_level();       // Функция инициализации уровня
-    void init_GUI();
+    //void init_GUI();
 
 
     // Функция обработки ввода
@@ -87,7 +87,7 @@ protected:
 
 
     // Функции GUI
-    bool exit_clicked(const CEGUI::EventArgs& e);
+   // bool exit_clicked(const CEGUI::EventArgs& e);
 
     // Функция начала игрового раунда
     void start_round();    
