@@ -3,8 +3,8 @@
 #include <SDL/SDL.h>
 #include <GL/glew.h>
 
-#include <CEGUI/CEGUI.h>
-#include <CEGUI/RendererModules/OpenGL/GL3Renderer.h>
+//#include <CEGUI/CEGUI.h>
+//#include <CEGUI/RendererModules/OpenGL/GL3Renderer.h>
 
 #include <MyEngine/Sprite.hpp>
 #include <MyEngine/GLSL.hpp>

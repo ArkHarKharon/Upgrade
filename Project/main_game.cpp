@@ -64,7 +64,7 @@ void Game::init_system()
     m_camera.set_position(glm::vec2(64 * 12.5f, 64 * 6.5f));
     m_camera.set_scale(0.5f);
 
-    CEGUI::OpenGL3Renderer& my_renderer = CEGUI::OpenGL3Renderer::bootstrapSystem();
+    //CEGUI::OpenGL3Renderer& my_renderer = CEGUI::OpenGL3Renderer::bootstrapSystem();
 }
 
 void Game::process_input()
