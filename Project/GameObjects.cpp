@@ -507,6 +507,8 @@ void PlayerTank::move(MyEngine::InputManager& input_manager, const std::vector<s
 
 void PlayerTank::turret_rotate(MyEngine::InputManager& input_manager, Tank* player)
 {
+    float turret_speed = 0.003f;
+
     if (m_turret_angle < 0)
         m_turret_angle = 6.283 + m_turret_angle;
 
@@ -520,23 +522,23 @@ void PlayerTank::turret_rotate(MyEngine::InputManager& input_manager, Tank* play
 
     float angle = 0;
 
-    if (mouse.x > pos.x and mouse.y < pos.y)
+    if (mouse.x > pos.x and mouse.y < pos.y) // 1 четверть
         angle = 6.28 - glm::atan((mouse.x - pos.x) / (pos.y - mouse.y));
 
-    else if (mouse.x < pos.x and mouse.y < pos.y)
+    else if (mouse.x < pos.x and mouse.y < pos.y) // 2 четверть
         angle = glm::atan((pos.x - mouse.x) / (pos.y - mouse.y));
 
-    else if (mouse.x < pos.x and mouse.y > pos.y)
+    else if (mouse.x < pos.x and mouse.y > pos.y) // 3 четверть
         angle = 1.57 + glm::atan((mouse.y - pos.y) / (pos.x - mouse.x));
 
-    else if (mouse.x > pos.x and mouse.y > pos.y)
+    else if (mouse.x > pos.x and mouse.y > pos.y) // 4 четверть
         angle = 3.14 + glm::atan((mouse.x - pos.x) / (mouse.y - pos.y));
 
     else if (mouse.y == pos.y and mouse.x < pos.x)
         angle = 1.57;
 
     else if (mouse.y == pos.y and mouse.x > pos.x)
-        angle = 5, 71;
+        angle = 4.71;
 
     float sub_angle = glm::abs(m_turret_angle - angle);
 
@@ -546,18 +548,18 @@ void PlayerTank::turret_rotate(MyEngine::InputManager& input_manager, Tank* play
     else
     {
         if (m_turret_angle > angle and sub_angle <= 3.14)
-            m_turret_angle -= 0.003;
+            m_turret_angle -= turret_speed;
 
         else if (m_turret_angle < angle and sub_angle <= 3.14)
-            m_turret_angle += 0.003;
+            m_turret_angle += turret_speed;
 
         else if (m_turret_angle > angle and sub_angle > 3.14)
-            m_turret_angle += 0.003;
+            m_turret_angle += turret_speed;
 
         else if (m_turret_angle < angle and sub_angle < 3.14)
-            m_turret_angle -= 0.003;
+            m_turret_angle -= turret_speed;
         else
-            m_turret_angle -= 0.003;
+            m_turret_angle -= turret_speed;
     }
 }
 

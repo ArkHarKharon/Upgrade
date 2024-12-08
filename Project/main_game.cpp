@@ -22,7 +22,7 @@ Game::~Game()
 void Game::run()
 {
     init_system();
-    //game_loop();
+    game_loop();
 }
 
 void Game::init_shaders()
@@ -45,26 +45,26 @@ void Game::init_system()
     glDepthFunc(GL_LESS); //
 
 
-    //m_window.create("Upgrade!", m_window_width, m_window_height, MyEngine::WindowFlag::FULLSCREEN);
+    m_window.create("Upgrade!", m_window_width, m_window_height, MyEngine::WindowFlag::FULLSCREEN);
 
     //init_GUI();
 
-    //init_shaders();
+    init_shaders();
 
-    //m_tank_sprite_batch.init();
+    m_tank_sprite_batch.init();
 
-    //m_fps_limiter.init(m_max_fps);
+    m_fps_limiter.init(m_max_fps);
 
-    //m_audio_manager.init();
+    m_audio_manager.init();
 
-    //init_level();
+    init_level();
 
     MyEngine::Music music = m_audio_manager.load_music("Data/Sound/theme.mp3");
     music.play();
     Mix_Volume(-1, 20);
 
-    //m_camera.set_position(glm::vec2(m_window_width + 20, m_window_height));
-    //m_camera.set_scale(0.49f);
+    m_camera.set_position(glm::vec2(m_window_width + 20, m_window_height));
+    m_camera.set_scale(0.49f);
 
 
 }
