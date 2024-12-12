@@ -758,7 +758,7 @@ bool BotTank::update(MyEngine::InputManager input_manager, const std::vector<std
 
     m_tank_pos = glm::ivec2((m_position.x) / m_tank_size, (m_position.y) / m_tank_size);
 
-    float error = 0.05;
+    float error = 0.02;
 
     if ((level_data.at(m_tank_pos.y).at(m_tank_pos.x) == 'e' or level_data.at(m_tank_pos.y).at(m_tank_pos.x) == 's'))
     {
@@ -766,7 +766,6 @@ bool BotTank::update(MyEngine::InputManager input_manager, const std::vector<std
         if ((curr_knot_pos.x + error > m_position.x + m_tank_size / 2 and curr_knot_pos.y + error > m_position.y + m_tank_size / 2) and (curr_knot_pos.x - error < m_position.x + m_tank_size / 2 and curr_knot_pos.y - error < m_position.y + m_tank_size / 2))
         {
             m_possible_directions.clear();
-            //m_possible_directions.resize(0);
             int directions_number = 0;
 
             if ((level_data.at(m_tank_pos.y + 1).at(m_tank_pos.x) != 'w') and (level_data.at(m_tank_pos.y + 1).at(m_tank_pos.x) != 'b'))

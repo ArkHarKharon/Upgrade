@@ -88,12 +88,6 @@ protected:
     void process_input();
 
 
-
-    // Функция начала игрового раунда
-    void start_round();    // Функция начала нового раунда
-
-
-
     // Функция игровой петли
     void game_loop();
 
