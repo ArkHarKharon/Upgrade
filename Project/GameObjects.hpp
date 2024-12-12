@@ -384,7 +384,7 @@ public:
 
     enum Difficulty
     {
-        DEBUG1, EASY, NORMAL, HARD, IMPOSIBLE
+        DEBUG = 1, EASY, NORMAL, HARD, IMPOSIBLE
     };
 
 

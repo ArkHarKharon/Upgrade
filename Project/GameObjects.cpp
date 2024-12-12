@@ -39,7 +39,7 @@ bool Projectile::update(std::vector<Tank*> tanks, const std::vector<std::string>
     m_position += m_direction * m_speed;
     m_lifetime++;
 
-    if (m_lifetime > 125)
+    if (m_lifetime > 250)
     {
         if (collide_with_tanks(tanks))
             return true;
@@ -885,17 +885,18 @@ void GameManager::start_round(std::vector<BotTank*>& bots, std::vector<Tank*>& t
     bool player = true;
     bool bot = false;
     int hp = 2000;
-    int damage = 50;
-    float speed = 0.1f;
-    int ammo_max = 50;
+    int damage = 30;
+    float speed = 0.05f;
+    int ammo_max = 100;
     int reload_time = 5000;
     float turret_speed = 0.003f;
     int fire_rate = 300;
-    float projectile_speed = 0.4f;
+    float projectile_speed = 0.2f;
     float accuracy = 0.01f;
     glm::vec2 player_start_pos = levels.at(0)->get_start_pos();
     std::vector<glm::vec2> enemy_start_pos;
-    std::string tank_texture = "Data/Textures/tankBlue.png";
+    std::string bot_tank_texture = "Data/Textures/tankRed.png";
+    std::string player_tank_texture = "Data/Textures/tankBlue.png";
     std::string turret_texture = "Data/Textures/tankTurret.png";
     std::string hp_texture = "Data/Textures/hp.png";
     std::string ammo_texture = "Data/Textures/ammo.png";
@@ -907,7 +908,7 @@ void GameManager::start_round(std::vector<BotTank*>& bots, std::vector<Tank*>& t
     PlayerTank* player_tank = new PlayerTank();
     player_tank->init(player, hp, damage, speed, ammo_max, reload_time,
         turret_speed, fire_rate, projectile_speed, accuracy, player_start_pos,
-        tank_texture, turret_texture, hp_texture, ammo_texture, fire_effect, death_bot);
+        player_tank_texture, turret_texture, hp_texture, ammo_texture, fire_effect, death_bot);
     tanks.push_back(player_tank);
 
     if (bot_spawn)
@@ -934,7 +935,7 @@ void GameManager::start_round(std::vector<BotTank*>& bots, std::vector<Tank*>& t
         {
             bots.at(i)->init(bot, hp * m_bot_strengh_scale, damage * m_bot_strengh_scale, speed * m_bot_strengh_scale, ammo_max * m_bot_strengh_scale, reload_time / m_bot_strengh_scale,
                 turret_speed * m_bot_strengh_scale, fire_rate / m_bot_strengh_scale, projectile_speed, accuracy,
-                enemy_start_pos.at(i), tank_texture, turret_texture, hp_texture,
+                enemy_start_pos.at(i), player_tank_texture, turret_texture, hp_texture,
                 ammo_texture, fire_effect, death_player);
             tanks.push_back(bots.at(i));
         }
@@ -992,7 +993,7 @@ void GameManager::bot_number_control(std::vector<BotTank*>& bots, std::vector<Ta
 
     }
 
-    if (m_frame_count > 50000)
+    if (m_frame_count > 25000)
     {
         if (tanks.size() - 1 < bot_num_limit)
         {
@@ -1011,17 +1012,18 @@ void GameManager::spawn_bot(std::vector<BotTank*>& bots, std::vector<Tank*>& tan
     bool player = true;
     bool bot = false;
     int hp = 2000;
-    int damage = 50;
-    float speed = 0.1f;
-    int ammo_max = 50;
+    int damage = 30;
+    float speed = 0.05f;
+    int ammo_max = 150;
     int reload_time = 5000;
     float turret_speed = 0.003f;
     int fire_rate = 300;
-    float projectile_speed = 0.4f;
+    float projectile_speed = 0.2f;
     float accuracy = 0.01f;
     glm::vec2 player_start_pos = levels.at(0)->get_start_pos();
     std::vector<glm::vec2> enemy_start_pos;
-    std::string tank_texture = "Data/Textures/tankBlue.png";
+    std::string bot_tank_texture = "Data/Textures/tankRed.png";
+    std::string player_tank_texture = "Data/Textures/tankBlue.png";
     std::string turret_texture = "Data/Textures/tankTurret.png";
     std::string hp_texture = "Data/Textures/hp.png";
     std::string ammo_texture = "Data/Textures/ammo.png";
@@ -1032,7 +1034,7 @@ void GameManager::spawn_bot(std::vector<BotTank*>& bots, std::vector<Tank*>& tan
     BotTank* bot1 = new BotTank();
     bot1->init(bot, hp * m_bot_strengh_scale, damage * m_bot_strengh_scale, speed * m_bot_strengh_scale, ammo_max * m_bot_strengh_scale, reload_time / m_bot_strengh_scale,
         turret_speed * m_bot_strengh_scale, fire_rate / m_bot_strengh_scale, projectile_speed, accuracy,
-        levels.at(0)->get_enemy_pos(), tank_texture, turret_texture, hp_texture,
+        levels.at(0)->get_enemy_pos(), player_tank_texture, turret_texture, hp_texture,
         ammo_texture, fire_effect, death_player);
 
     tanks.push_back(bot1);
@@ -1061,18 +1063,25 @@ void GameManager::session_control(std::vector<BotTank*>& bots, std::vector<Tank*
 
 void GameManager::session_control_init_setting()
 {
-    system("cls");
-
-    std::cout
-        << "Выберите уровень сложности:\n"
-        << "1) Лёгкий (боты в 4 раза слабее игрока, 25 очков за бота)\n"
-        << "2) Нормальный (боты в 2 раза слабее игрока, 100 очков за бота)\n"
-        << "3) Тяжелый (боты равны игроку, 200 очков за бота)\n"
-        << "4) Невозможный (боты в 1.5 раза сильнее, 400 очков за бота)\n"
-        << "Выбор: ";
 
     short int choice;
-    std::cin >> choice;//
+    do
+    {
+        system("cls");
+
+        std::cout
+            << "Выберите уровень сложности:\n"
+            << "1) Лёгкий (боты в 4 раза слабее игрока, 25 очков за бота)\n"
+            << "2) Нормальный (боты в 2 раза слабее игрока, 100 очков за бота)\n"
+            << "3) Тяжелый (боты равны игроку, 200 очков за бота)\n"
+            << "4) Невозможный (боты в 1.5 раза сильнее, 400 очков за бота)\n"
+            << "Выбор: ";
+
+        
+        std::cin >> choice;//
+
+       
+    } while (!(choice > 0 and choice < 5));
 
     m_difficulty = choice;
 
@@ -1139,7 +1148,7 @@ void GameManager::handle_player_death(std::vector<BotTank*>& bots, std::vector<T
 
 void GameManager::end_screen(std::vector<BotTank*>& bots, std::vector<Tank*>& tanks, std::vector <Level*>& levels, MyEngine::AudioManager& audio_manager)
 {
-    //end_game(bots,tanks, levels, audio_manager);w
+    //end_game(bots,tanks, levels, audio_manager);
 
     std::string difficulty;
     switch (m_difficulty)
